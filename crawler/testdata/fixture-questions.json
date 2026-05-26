@@ -1,0 +1,32 @@
+{
+  "slug": "sap-c02",
+  "displayName": "AWS SAP-C02",
+  "version": "fixture",
+  "questions": [
+    {
+      "examSlug": "sap-c02",
+      "number": 1,
+      "text": "A company needs highly available object storage for static practice data. Which AWS service is the closest production match for local MinIO development?",
+      "choices": [
+        {
+          "label": "A",
+          "text": "Amazon S3"
+        },
+        {
+          "label": "B",
+          "text": "Amazon RDS"
+        },
+        {
+          "label": "C",
+          "text": "Amazon EKS"
+        },
+        {
+          "label": "D",
+          "text": "AWS Lambda"
+        }
+      ],
+      "answerKey": ["A"],
+      "explanation": "MinIO provides an S3-compatible API for local development."
+    }
+  ]
+}

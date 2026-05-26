@@ -1,0 +1,9 @@
+crawler/build/
+crawler/build.*/
+
+**/.terraform/
+*.tfplan
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
