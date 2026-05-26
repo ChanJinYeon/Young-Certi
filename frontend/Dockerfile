@@ -1,5 +1,5 @@
-FROM node:22-alpine
+FROM mcr.microsoft.com/playwright:v1.49.1-noble
 
 WORKDIR /workspace
 
-RUN corepack enable && corepack prepare pnpm@10.18.0 --activate
+RUN npm install --global pnpm@10.18.0

@@ -6,27 +6,262 @@
     {
       "examSlug": "sap-c02",
       "number": 1,
-      "text": "A company needs highly available object storage for static practice data. Which AWS service is the closest production match for local MinIO development?",
+      "text": "Fixture question 1: Which AWS service is the closest production match for local MinIO object-storage development?",
       "choices": [
-        {
-          "label": "A",
-          "text": "Amazon S3"
-        },
-        {
-          "label": "B",
-          "text": "Amazon RDS"
-        },
-        {
-          "label": "C",
-          "text": "Amazon EKS"
-        },
-        {
-          "label": "D",
-          "text": "AWS Lambda"
-        }
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
       ],
       "answerKey": ["A"],
-      "explanation": "MinIO provides an S3-compatible API for local development."
+      "explanation": "Fixture explanation 1."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 2,
+      "text": "Fixture question 2: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 2."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 3,
+      "text": "Fixture question 3: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 3."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 4,
+      "text": "Fixture question 4: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 4."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 5,
+      "text": "Fixture question 5: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 5."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 6,
+      "text": "Fixture question 6: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 6."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 7,
+      "text": "Fixture question 7: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 7."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 8,
+      "text": "Fixture question 8: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 8."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 9,
+      "text": "Fixture question 9: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 9."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 10,
+      "text": "Fixture question 10: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 10."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 11,
+      "text": "Fixture question 11: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 11."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 12,
+      "text": "Fixture question 12: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 12."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 13,
+      "text": "Fixture question 13: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 13."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 14,
+      "text": "Fixture question 14: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 14."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 15,
+      "text": "Fixture question 15: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 15."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 16,
+      "text": "Fixture question 16: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 16."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 17,
+      "text": "Fixture question 17: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 17."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 18,
+      "text": "Fixture question 18: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 18."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 19,
+      "text": "Fixture question 19: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 19."
+    },
+    {
+      "examSlug": "sap-c02",
+      "number": 20,
+      "text": "Fixture question 20: Which service stores objects in buckets?",
+      "choices": [
+        { "label": "A", "text": "Amazon S3" },
+        { "label": "B", "text": "Amazon RDS" },
+        { "label": "C", "text": "Amazon EKS" },
+        { "label": "D", "text": "AWS Lambda" }
+      ],
+      "answerKey": ["A"],
+      "explanation": "Fixture explanation 20."
     }
   ]
 }

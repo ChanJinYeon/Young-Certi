@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
@@ -52,6 +52,13 @@ export function PracticePage() {
   const numbers = numbersQuery.data?.numbers ?? [];
   const index = numbers.indexOf(validNumber);
   const error = questionQuery.error ?? numbersQuery.error;
+  const savedResult = results.getResult(examSlug, validNumber);
+
+  useEffect(() => {
+    setSelected(savedResult?.selected ?? []);
+    setSubmitted(Boolean(savedResult?.submittedAt));
+    setSubmitError("");
+  }, [examSlug, savedResult, validNumber]);
 
   if (error) {
     const message = error instanceof ApiError ? error.envelope.message : "문제를 불러오지 못했습니다.";
@@ -70,9 +77,6 @@ export function PracticePage() {
   }
 
   function goTo(number: number) {
-    setSelected([]);
-    setSubmitted(false);
-    setSubmitError("");
     navigate(`/${examSlug}/practice/${number}`);
   }
 
@@ -152,4 +156,3 @@ export function PracticePage() {
     </main>
   );
 }
-

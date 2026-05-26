@@ -1,7 +1,13 @@
 import { parseApiError } from "../lib/error";
 import { questionNumbersSchema, questionSchema } from "./types";
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl =
+  configuredBaseUrl && configuredBaseUrl.length > 0
+    ? configuredBaseUrl
+    : window.location.hostname === "web"
+      ? "http://api:8000"
+      : "http://localhost:8000";
 
 async function getJson<T>(path: string, parse: (value: unknown) => T): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`);
@@ -18,4 +24,3 @@ export function fetchQuestionNumbers(examSlug: string) {
 export function fetchQuestion(examSlug: string, number: number) {
   return getJson(`/exams/${examSlug}/questions/${number}`, (value) => questionSchema.parse(value));
 }
-

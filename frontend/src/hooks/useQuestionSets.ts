@@ -1,3 +1,4 @@
+import { createClientId } from "../lib/id";
 import { storageKey, useStoredState } from "./storage";
 
 export type QuestionRef = {
@@ -41,7 +42,7 @@ export function useQuestionSets(sessionId: string) {
         return [
           ...current,
           {
-            id: crypto.randomUUID(),
+            id: createClientId("set"),
             name: trimmed,
             createdAt: new Date().toISOString(),
             questionRefs: [ref],
@@ -51,4 +52,3 @@ export function useQuestionSets(sessionId: string) {
     },
   };
 }
-

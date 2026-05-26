@@ -1,4 +1,4 @@
-.PHONY: dev test test-crawler test-backend test-frontend crawl crawl-fixture cluster-up cluster-down down verify-m01
+.PHONY: dev test test-crawler test-backend test-frontend e2e crawl crawl-fixture cluster-up cluster-down down verify-m01
 
 dev:
 	docker compose up -d --build
@@ -12,7 +12,11 @@ test-backend:
 	docker compose run --rm api pytest
 
 test-frontend:
-	docker compose run --rm web node -e "console.log('frontend test stub')"
+	docker compose run --rm web pnpm test
+
+e2e:
+	docker compose up -d minio api web
+	docker compose run --rm web pnpm e2e
 
 crawl:
 	docker compose run --rm crawler sh -c "mkdir -p build && go run ./cmd/crawl-sap-c02 -page-start 2 -page-end 97 -interval 2m -retry-delay 10m -max-retries 1 -output build/questions.json -upload"

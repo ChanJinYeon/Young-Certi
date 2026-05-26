@@ -213,7 +213,7 @@
 
 ---
 
-## [ ] M06 — 로컬 E2E 통합
+## [x] M06 — 로컬 E2E 통합
 
 - **목적 (Purpose)**: 전체 스택을 docker compose로 띄워 P1 해피패스를 Playwright로 검증한다. 로컬에서 "진짜 동작"을 확인하는 단계 (사용자: 로컬 테스트 먼저).
 - **명세 참조**: spec.md Success Criteria SC-001~006, quickstart.md "P1 acceptance walkthrough", plan.md 테스트 다이어그램 →E2E 항목
@@ -233,10 +233,10 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T050** — Playwright 설정 + compose `e2e` 타겟 (web 컨테이너 내 헤드리스) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T051** — RED+GREEN: P1 happy-path 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T052** — CORS 분리 origin 검증 테스트 (web origin → api origin 프리플라이트) (executor: codex, skill: none)
-- [ ] **T053** — 검증: 전체 스택 e2e 통과, `down -v` 정상 (executor: codex, skill: none)
+- [x] **T050** — Playwright 설정 + compose `e2e` 타겟 (web 컨테이너 내 헤드리스) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T051** — RED+GREEN: P1 happy-path 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T052** — CORS 분리 origin 검증 테스트 (web origin → api origin 프리플라이트) (executor: codex, skill: none)
+- [x] **T053** — 검증: 전체 스택 e2e 통과, `down -v` 정상 (executor: codex, skill: none)
 
 ---
 
