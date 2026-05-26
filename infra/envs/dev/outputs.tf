@@ -13,6 +13,21 @@ output "questions_key" {
   value       = module.data_bucket.questions_key
 }
 
+output "frontend_bucket_name" {
+  description = "Frontend static asset bucket name when frontend CDN is enabled."
+  value       = try(module.frontend_cdn[0].bucket_name, null)
+}
+
+output "frontend_cloudfront_domain_name" {
+  description = "CloudFront domain name when frontend CDN is enabled."
+  value       = try(module.frontend_cdn[0].cloudfront_domain_name, null)
+}
+
+output "frontend_cors_allowed_origins" {
+  description = "Backend CORS origins derived from the frontend CloudFront distribution."
+  value       = var.enable_frontend_cdn ? [module.frontend_cdn[0].cors_allowed_origin] : []
+}
+
 output "budget_name" {
   description = "Monthly AWS budget resource name."
   value       = aws_budgets_budget.monthly_cost.name

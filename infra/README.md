@@ -77,3 +77,17 @@ with:
 
 The `cluster-up` and `cluster-down` workflows wrap the EKS lifecycle with
 manual confirmation strings and always use that same remote state.
+
+## Frontend CDN
+
+The frontend CDN is opt-in so local and CI plans do not create CloudFront by
+accident:
+
+```sh
+docker compose run --rm tf terraform -chdir=infra/envs/dev plan \
+  -var enable_frontend_cdn=true
+```
+
+When applied, Terraform outputs `frontend_cors_allowed_origins`. Use that
+value as the backend chart's `env.CORS_ALLOWED_ORIGINS` value so the API only
+allows browser requests from the CloudFront frontend origin.

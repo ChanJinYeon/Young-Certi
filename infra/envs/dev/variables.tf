@@ -63,6 +63,18 @@ variable "enable_ephemeral_cluster" {
   default     = false
 }
 
+variable "enable_frontend_cdn" {
+  description = "Explicitly create the frontend S3 and CloudFront distribution."
+  type        = bool
+  default     = false
+}
+
+variable "frontend_force_destroy" {
+  description = "Whether Terraform may delete the non-empty frontend asset bucket."
+  type        = bool
+  default     = false
+}
+
 variable "manage_karpenter_manifests" {
   description = "Create Karpenter EC2NodeClass and NodePool manifests after Karpenter CRDs are installed."
   type        = bool

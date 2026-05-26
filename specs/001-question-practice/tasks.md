@@ -274,7 +274,7 @@
 
 ---
 
-## [ ] M08 — 프론트엔드 배포(S3+CloudFront) + CI/CD
+## [x] M08 — 프론트엔드 배포(S3+CloudFront) + CI/CD
 
 - **목적 (Purpose)**: 프론트엔드를 S3+CloudFront로 배포하는 Terraform과, 4개 GitHub Actions 워크플로(lint/test/build/scan/plan)를 만든다.
 - **명세 참조**: plan.md §infra(frontend deploy), §CI/CD, constitution I/III/V
@@ -296,11 +296,11 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T070** — `modules/frontend-cdn`: S3+CloudFront+OAC, s3-bucket 모듈 재사용 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T071** — 백엔드 CORS를 CloudFront 도메인으로 좁히는 변수 배선 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T072** — `.github/workflows/frontend.yaml`, `backend.yaml`(trivy 이미지 스캔 포함) (executor: codex, skill: none)
-- [ ] **T073** — `.github/workflows/crawler.yaml`, `infra.yaml`(fmt/validate/tflint/checkov/plan) (executor: codex, skill: none)
-- [ ] **T074** — 검증: validate/checkov/plan 통과, 워크플로 yaml lint (executor: codex, skill: none)
+- [x] **T070** — `modules/frontend-cdn`: S3+CloudFront+OAC, s3-bucket 모듈 재사용 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T071** — 백엔드 CORS를 CloudFront 도메인으로 좁히는 변수 배선 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T072** — `.github/workflows/frontend.yaml`, `backend.yaml`(trivy 이미지 스캔 포함) (executor: codex, skill: none)
+- [x] **T073** — `.github/workflows/crawler.yaml`, `infra.yaml`(fmt/validate/tflint/checkov/plan) (executor: codex, skill: none)
+- [x] **T074** — 검증: validate/checkov/plan 통과, 워크플로 yaml lint (executor: codex, skill: none)
 
 ---
 

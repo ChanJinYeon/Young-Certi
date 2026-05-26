@@ -26,6 +26,15 @@ module "data_bucket" {
   tags          = local.common_tags
 }
 
+module "frontend_cdn" {
+  count  = var.enable_frontend_cdn ? 1 : 0
+  source = "../../modules/frontend-cdn"
+
+  name          = "${local.name_prefix}-frontend"
+  force_destroy = var.frontend_force_destroy
+  tags          = local.common_tags
+}
+
 module "vpc" {
   source = "../../modules/vpc"
 
