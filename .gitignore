@@ -7,3 +7,9 @@ crawler/build.*/
 *.tfstate.*
 crash.log
 crash.*.log
+
+node_modules/
+.pnpm-store/
+*.tsbuildinfo
+frontend/dist/
+frontend/coverage/

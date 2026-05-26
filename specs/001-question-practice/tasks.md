@@ -177,7 +177,7 @@
 
 ---
 
-## [ ] M05 — 프론트엔드 (React): 문제 풀이 화면 + 컴포넌트 + localStorage
+## [x] M05 — 프론트엔드 (React): 문제 풀이 화면 + 컴포넌트 + localStorage
 
 - **목적 (Purpose)**: `/sap-c02/practice/:n` 화면을 구현한다. 사이드 메뉴, 단일/다중 선지, 녹/적 피드백, 해설, 이전/다음, 즐겨찾기, 문제집 모달, localStorage 상태. (코드만 — 비주얼 polish는 M09 Claude)
 - **명세 참조**: spec.md User Story 1~3 + FR-001~019, plan.md §Frontend + §Design System, data-model.md §2, research.md D-008~D-013
@@ -203,13 +203,13 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T040** — 스캐폴드: Vite+React19+TS+Tailwind4 설정, 라우터, `api/` 생성 타입(openapi.yaml 기반), `lib/error.ts`(envelope 파서), zod 스키마 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T041** — RED: localStorage 훅 테스트 (useLocalSession/useFavorites/useQuestionSets/usePerQuestionResult — 생성/중복/재로드/quota/비활성) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T042** — GREEN: localStorage 훅 구현 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T043** — RED: 컴포넌트 테스트 (ChoiceList radio/checkbox/0개거부, ResultFeedback 4 케이스, SideMenu, QuestionSetPicker, FavoriteToggle) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T044** — GREEN: 컴포넌트 + practice 페이지 구현 (기능 우선, 비주얼은 M09에서 polish) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T045** — RED+GREEN: practice 페이지 통합 (fetch happy/404/5xx, prev/next, URL 동기화) + @tanstack/react-query (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T046** — 검증: test/typecheck/lint/build 전부 통과 (executor: codex, skill: none)
+- [x] **T040** — 스캐폴드: Vite+React19+TS+Tailwind4 설정, 라우터, `api/` 생성 타입(openapi.yaml 기반), `lib/error.ts`(envelope 파서), zod 스키마 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T041** — RED: localStorage 훅 테스트 (useLocalSession/useFavorites/useQuestionSets/usePerQuestionResult — 생성/중복/재로드/quota/비활성) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T042** — GREEN: localStorage 훅 구현 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T043** — RED: 컴포넌트 테스트 (ChoiceList radio/checkbox/0개거부, ResultFeedback 4 케이스, SideMenu, QuestionSetPicker, FavoriteToggle) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T044** — GREEN: 컴포넌트 + practice 페이지 구현 (기능 우선, 비주얼은 M09에서 polish) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T045** — RED+GREEN: practice 페이지 통합 (fetch happy/404/5xx, prev/next, URL 동기화) + @tanstack/react-query (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T046** — 검증: test/typecheck/lint/build 전부 통과 (executor: codex, skill: none)
 
 ---
 

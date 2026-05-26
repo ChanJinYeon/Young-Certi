@@ -73,7 +73,8 @@ services:
     volumes:
       - .:/workspace
     working_dir: /workspace/frontend
-    command: node scripts/dev-server.mjs
+    entrypoint: []
+    command: pnpm dev
     healthcheck:
       test: ["CMD", "node", "-e", "require('node:http').get('http://127.0.0.1:5173', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
       interval: 5s
