@@ -150,19 +150,19 @@
 - **주 Executor**: codex
 - **Skill routing**: (없음 — Python/FastAPI 전용 스킬 미설치, fallback)
 - **완료 정의 (DoD)**:
-  - [ ] OpenAPI 문서가 contracts/openapi.yaml과 drift 없음 (export 타겟)
-  - [ ] 풀 로더: 기동 로드 + 5분 ETag 폴링 + 원자적 swap + 검증 실패 시 이전 풀 유지
-  - [ ] S3 unreachable 시 프로세스 non-zero 종료(빈 풀 서빙 금지)
-  - [ ] `/healthz`, `/readyz`, `/exams`, `/exams/{slug}/questions`, `/exams/{slug}/questions/{n}` 동작
-  - [ ] 통일 에러 envelope `{code,message,details?,requestId}` + X-Request-Id 미들웨어
-  - [ ] CORS allow-list(`CORS_ALLOWED_ORIGINS`) 적용
-  - [ ] schemathesis 계약 테스트 통과
-- **테스트 전략**: pytest 단위(풀 로더 분기: 변경/무변경/잘못된 JSON/5xx) + httpx 통합 + schemathesis 계약. moto 또는 MinIO로 S3 모킹.
+  - [x] OpenAPI 문서가 contracts/openapi.yaml과 drift 없음 (export 타겟)
+  - [x] 풀 로더: 기동 로드 + 5분 ETag 폴링 + 원자적 swap + 검증 실패 시 이전 풀 유지
+  - [x] S3 unreachable 시 프로세스 non-zero 종료(빈 풀 서빙 금지)
+  - [x] `/healthz`, `/readyz`, `/exams`, `/exams/{slug}/questions`, `/exams/{slug}/questions/{n}` 동작
+  - [x] 통일 에러 envelope `{code,message,details?,requestId}` + X-Request-Id 미들웨어
+  - [x] CORS allow-list(`CORS_ALLOWED_ORIGINS`) 적용
+  - [x] schemathesis 계약 테스트 통과
+- **테스트 전략**: pytest 단위(풀 로더 분기: 변경/무변경/잘못된 JSON/5xx) + httpx 통합 + schemathesis 계약(**Schemathesis 4.x: 실행 중 api 컨테이너의 라이브 스키마 대상**, 구버전 `--app` 미지원). moto 또는 MinIO로 S3 모킹.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm api pytest`
   - `docker compose run --rm api python -m young_certi_api.export_openapi | diff - contracts/openapi.yaml`
   - `docker compose run --rm api ruff check . && docker compose run --rm api mypy .`
-  - `docker compose run --rm api schemathesis run --app young_certi_api.main:app /openapi.json`
+  - `docker compose up -d api && docker compose run --rm api schemathesis run -u http://api:8000 http://api:8000/openapi.json` (Schemathesis 4.x; 구버전 `schemathesis run --app young_certi_api.main:app /openapi.json`는 폐지됨)
 - **예상 커밋 메시지 (영문)**: `feat(api): in-memory question pool, REST endpoints, unified errors, CORS (M04)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
