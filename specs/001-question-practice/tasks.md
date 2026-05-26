@@ -240,7 +240,7 @@
 
 ---
 
-## [ ] M07 — EKS + Karpenter + Helm 배포 (로컬 검증 후)
+## [x] M07 — EKS + Karpenter + Helm 배포 (로컬 검증 후)
 
 - **목적 (Purpose)**: 로컬이 검증된 뒤 ephemeral EKS 클러스터(Terraform) + Karpenter(Spot) + 백엔드 Helm 차트를 만든다. **사용자 요청대로 S3(M03) 다음, 로컬(M06) 이후로 미룬 인프라.**
 - **명세 참조**: plan.md §infra(eks, helm), constitution I/II/III, research.md D-006
@@ -265,12 +265,12 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T060** — `modules/vpc` (executor: codex, skill: `terraform-code-generation:terraform-search-import`)
-- [ ] **T061** — `modules/eks`: 클러스터 + Karpenter Helm + Spot NodePool (executor: codex, skill: `terraform-code-generation:terraform-search-import`)
-- [ ] **T062** — `modules/github-oidc`: CI용 OIDC role(키 없음) (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T063** — `helm/young-certi`: 백엔드 차트(probe, IRSA, scale) (executor: codex, skill: none)
-- [ ] **T064** — `envs/dev` EKS 인스턴스화 + cluster-up/down 워크플로 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T065** — 검증: validate/tflint/checkov/helm-lint/plan 통과 (executor: codex, skill: none)
+- [x] **T060** — `modules/vpc` (executor: codex, skill: `terraform-code-generation:terraform-search-import`)
+- [x] **T061** — `modules/eks`: 클러스터 + Karpenter Helm + Spot NodePool (executor: codex, skill: `terraform-code-generation:terraform-search-import`)
+- [x] **T062** — `modules/github-oidc`: CI용 OIDC role(키 없음) (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T063** — `helm/young-certi`: 백엔드 차트(probe, IRSA, scale) (executor: codex, skill: none)
+- [x] **T064** — `envs/dev` EKS 인스턴스화 + cluster-up/down 워크플로 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T065** — 검증: validate/tflint/checkov/helm-lint/plan 통과 (executor: codex, skill: none)
 
 ---
 

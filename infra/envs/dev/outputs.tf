@@ -17,3 +17,18 @@ output "budget_name" {
   description = "Monthly AWS budget resource name."
   value       = aws_budgets_budget.monthly_cost.name
 }
+
+output "eks_cluster_name" {
+  description = "EKS cluster name when the ephemeral cluster is enabled."
+  value       = module.eks.cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  description = "EKS cluster endpoint when the ephemeral cluster is enabled."
+  value       = module.eks.cluster_endpoint
+}
+
+output "github_actions_role_arn" {
+  description = "IAM role ARN for GitHub Actions OIDC when enabled."
+  value       = module.github_oidc.role_arn
+}
