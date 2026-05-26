@@ -304,7 +304,7 @@
 
 ---
 
-## [ ] M09 — UI/UX 종합 정리 (Claude)
+## [x] M09 — UI/UX 종합 정리 (Claude)
 
 - **목적 (Purpose)**: codex가 만든 결과물을 전 화면 일관성, 디자인 시스템(plan.md §Design System), 접근성, 디렉터리 위생 관점에서 한 번에 정리하고 최종 커밋한다.
 - **명세 참조**: spec.md(UX 요구사항), plan.md §Design System(토큰·상태 매트릭스·a11y baseline), 이전 모든 M-task 결과
@@ -334,4 +334,4 @@
 - [x] **T903** — 디자인 시스템 polish 전 화면 적용 (executor: claude, skill: `frontend-design:frontend-design`)
 - [x] **T904** — a11y / responsive / motion sweep (executor: claude, skill: `web-design-guidelines`)
 - [x] **T905** — `design-review`로 라이브 렌더 시각 감사 (executor: claude, skill: `design-review`)
-- [ ] **T906** — 최종 git commit (executor: claude, skill: none)
+- [x] **T906** — 최종 git commit (executor: claude, skill: none)
