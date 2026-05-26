@@ -63,16 +63,16 @@ export function SideMenu({ numbers, current, statuses, favorites, examSlug, onSe
                     : "border-transparent text-zinc-700 hover:bg-zinc-50"
                 }`}
               >
-                {favorite ? (
-                  <span aria-label={`즐겨찾기 ${number}`} className="inline-flex text-amber-400">
-                    <Star aria-hidden size={13} fill="currentColor" strokeWidth={0} />
-                  </span>
-                ) : null}
                 <span
                   aria-hidden
                   className={`h-2 w-2 shrink-0 rounded-full ${dotClass(statuses[number])}`}
                 />
                 <span className="font-mono">{number}</span>
+                {favorite ? (
+                  <span aria-label={`즐겨찾기 ${number}`} className="ml-auto inline-flex text-amber-400">
+                    <Star aria-hidden size={13} fill="currentColor" strokeWidth={0} />
+                  </span>
+                ) : null}
               </a>
             </li>
           );

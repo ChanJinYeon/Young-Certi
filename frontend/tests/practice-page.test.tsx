@@ -6,13 +6,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PracticePage } from "../src/pages/PracticePage";
 
-function renderPractice(path = "/sap-c02/practice/1") {
+function renderPractice(path = "/sap-c02/practice") {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={[path]}>
         <Routes>
-          <Route path="/:examSlug/practice/:n" element={<PracticePage />} />
+          <Route path="/:examSlug/practice" element={<PracticePage />} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,

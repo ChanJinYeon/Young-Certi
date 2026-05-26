@@ -88,6 +88,13 @@ exposes no per-user endpoints.
 | `id` | UUIDv4 | Generated client-side on first visit, stored at `young-certi/sessionId`. |
 | `createdAt` | ISO 8601 | First-touch timestamp. |
 
+### Entity: CurrentQuestion
+
+Persisted under `young-certi/v1/<sessionId>/current` as a map
+`{ [examSlug]: number }`. Since the question number is not in the URL
+(FR-017/FR-018, research.md D-009), this is what restores the last viewed
+question on a full-page reload. Defaults to question 1 when absent.
+
 ### Entity: PerQuestionResult
 
 Keyed by `{examSlug, number}`. Persisted under

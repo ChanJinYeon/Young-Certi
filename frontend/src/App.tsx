@@ -10,8 +10,8 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          <Route path="/:examSlug/practice/:n" element={<PracticePage />} />
-          <Route path="*" element={<Navigate to="/sap-c02/practice/1" replace />} />
+          <Route path="/:examSlug/practice" element={<PracticePage />} />
+          <Route path="*" element={<Navigate to="/sap-c02/practice" replace />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

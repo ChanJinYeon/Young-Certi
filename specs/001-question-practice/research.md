@@ -143,17 +143,25 @@ discarded).
 
 ### D-009 — URL surface
 
-**Decision**: `/<:examSlug>/practice/:n` (e.g.,
-`/sap-c02/practice/12`). Reserved siblings:
-`/<:examSlug>/exam/...`, `/<:examSlug>/sets/:setId`,
+**Decision**: `/<:examSlug>/practice` (e.g., `/sap-c02/practice`).
+Reserved siblings: `/<:examSlug>/exam/...`, `/<:examSlug>/sets/:setId`,
 `/<:examSlug>/` for the per-exam landing screen.
 
 **Rationale**: Exam-first hierarchy lets each new exam land cleanly;
 mode (practice / exam / sets) is the second segment, keeping
 intra-exam navigation natural.
 
+**Revised (2026-05-27, user request)**: The question number was removed
+from the URL (was `/practice/:n`). The current question is now client
+state persisted in localStorage; prev/next switch in-page without a route
+change, which also keeps the side menu mounted (scroll preserved). Reload
+restores the last question from localStorage. Trade-off accepted: no
+per-question shareable/deep-link URL in the MVP. Updates FR-017, FR-018,
+SC-005.
+
 **Alternatives**: Mode-first (`/practice/:examSlug/:n`) — rejected
-because per-exam landing pages are awkward to insert later.
+because per-exam landing pages are awkward to insert later. URL-per-
+question (`/practice/:n`) — the original decision, reversed above.
 
 ---
 

@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
@@ -13,6 +13,7 @@ import { useFavorites } from "../hooks/useFavorites";
 import { useLocalSession } from "../hooks/useLocalSession";
 import { score, usePerQuestionResult, type Correctness } from "../hooks/usePerQuestionResult";
 import { useQuestionSets } from "../hooks/useQuestionSets";
+import { storageKey, useStoredState } from "../hooks/storage";
 
 const ghostButton =
   "min-h-11 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
@@ -21,11 +22,13 @@ const primaryButton =
 
 export function PracticePage() {
   const params = useParams();
-  const navigate = useNavigate();
   const examSlug = params.examSlug ?? "sap-c02";
-  const currentNumber = Number(params.n);
-  const validNumber = Number.isFinite(currentNumber) && currentNumber > 0 ? currentNumber : 1;
   const { sessionId, isEphemeral } = useLocalSession();
+  // Current question lives in client state (persisted), not the URL — the URL
+  // stays at /:examSlug/practice and navigation is in-page (no remount, scroll
+  // preserved). localStorage restores the last question on reload.
+  const currentStore = useStoredState<Record<string, number>>(storageKey(sessionId, "current"), {});
+  const validNumber = currentStore.value[examSlug] ?? 1;
   const favorites = useFavorites(sessionId);
   const results = usePerQuestionResult(sessionId);
   const sets = useQuestionSets(sessionId);
@@ -41,6 +44,10 @@ export function PracticePage() {
   const questionQuery = useQuery({
     queryKey: ["question", examSlug, validNumber],
     queryFn: () => fetchQuestion(examSlug, validNumber),
+    // Keep the previous question mounted while the next loads so the side
+    // menu doesn't unmount (preserves its scroll position) and the swap is
+    // smooth instead of flashing the loading skeleton.
+    placeholderData: keepPreviousData,
   });
 
   const statuses = useMemo<Record<number, Correctness>>(() => {
@@ -97,7 +104,7 @@ export function PracticePage() {
   }
 
   function goTo(number: number) {
-    navigate(`/${examSlug}/practice/${number}`);
+    currentStore.setValue((current) => ({ ...current, [examSlug]: number }));
   }
 
   function submit() {

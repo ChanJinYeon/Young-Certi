@@ -246,16 +246,21 @@ confirm the set exists and contains exactly those three questions.
 
 **URL surface and routing**
 
-- **FR-017**: All practice URLs MUST follow the exam-first path shape
-  `/:examSlug/practice/:questionNumber` (e.g.,
-  `/sap-c02/practice/12`). The exam slug is the top-level segment so
-  that future exam-specific landing pages, exam-mode screens, and
-  question-set screens can be added as siblings under the same exam
-  (`/sap-c02/exam/...`, `/sap-c02/sets/:setId`) without colliding with
-  or rewriting this MVP's URLs. Adding a new exam in the future MUST
-  only require introducing a new top-level slug.
-- **FR-018**: Navigating prev / next MUST update the URL so that the
-  current question is shareable and reload-stable within the session.
+- **FR-017**: The practice screen MUST use the exam-first path shape
+  `/:examSlug/practice` (e.g., `/sap-c02/practice`). The current question
+  number is NOT encoded in the URL — it is client-side state persisted in
+  localStorage. The exam slug is the top-level segment so that future
+  exam-specific landing pages, exam-mode screens, and question-set screens
+  can be added as siblings under the same exam (`/sap-c02/exam/...`,
+  `/sap-c02/sets/:setId`) without colliding with or rewriting this MVP's
+  URLs. Adding a new exam in the future MUST only require introducing a
+  new top-level slug.
+- **FR-018**: Navigating prev / next MUST switch questions in-page (client
+  state only) WITHOUT changing the URL or remounting the screen, so the
+  side menu's scroll position is preserved. The current question is
+  persisted to localStorage so a full-page reload restores it for the same
+  session. (Revision of the earlier URL-per-question decision — see
+  research.md D-009. Trade-off: no per-question shareable URL in the MVP.)
 
 **Data integrity**
 
@@ -329,9 +334,10 @@ confirm the set exists and contains exactly those three questions.
 - **SC-004**: Within one session, favorites and question sets persist
   across at least 20 page navigations and one full-page reload in the
   same tab.
-- **SC-005**: The URL of the currently displayed question is reload-
-  stable: copying the URL into a new tab in the same browser loads the
-  same question in its un-submitted state.
+- **SC-005**: The currently displayed question is reload-stable via
+  localStorage: refreshing the page in the same browser/tab restores the
+  last viewed question. The URL does not encode the question number, so it
+  is not a per-question share link in this MVP.
 - **SC-006**: No screen in this MVP requires the user to enter an email,
   password, or any account credential.
 
