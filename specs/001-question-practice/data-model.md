@@ -30,7 +30,7 @@ truth for both backend and crawler.
 |---|---|---|
 | `number` | int | Stable within `Exam`. Unique within an exam. Used in URL. |
 | `text` | string (Korean) | Question body. |
-| `choices` | `Choice[]` | Length 2–8 in practice; validated `len(choices) >= 2`. |
+| `choices` | `Choice[]` | Length 1–8 in practice; validated `len(choices) >= 1`. |
 | `answerKey` | string[] | Subset of `Choice.label` values. `len == 1` → single-answer; `len > 1` → multi-answer. `len >= 1` is required. |
 | `explanation` | string (Korean) \| null | May be missing in the crawl; if null, UI shows "해설 없음" rather than crashing. |
 
@@ -45,7 +45,7 @@ truth for both backend and crawler.
 
 - `slug` matches `^[a-z0-9][a-z0-9-]*$`.
 - `Question.number` is unique within `Exam.questions`.
-- `Question.choices` has 2–8 items, each with a unique `label`.
+- `Question.choices` has 1–8 items, each with a unique `label`.
 - `Question.answerKey` is a non-empty subset of `Question.choices[].label`.
 - Validation failure during pool refresh → reject the new artifact,
   keep the old pool, log a structured error including the offending

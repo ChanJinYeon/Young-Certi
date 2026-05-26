@@ -8,7 +8,7 @@
 ## 가정 (Assumptions)
 
 - 로컬 실행/검증은 모두 docker compose 컨테이너 안에서 수행한다 (cloud/k8s 이전 용이성).
-- 구현(크롤러·백엔드·프론트엔드 코드·테스트·Terraform)은 전부 Codex가 담당하고, 마지막 large-task에서 Claude가 UI/UX 종합 정리와 커밋만 수행한다.
+- 구현(크롤러·백엔드·프론트엔드 코드·테스트·Terraform)은 전부 Codex가 담당하고, 마지막 large-task(M09)에서 Claude가 UI/UX 종합 정리를 수행한다. **커밋은 large-task당 1개**로, Codex가 각 Mxx 검증 통과 후 직접 커밋하고 M09만 Claude가 커밋한다(push는 안 함).
 - 로컬에서는 **MinIO**가 S3 대역(stand-in)이다. 크롤러와 백엔드는 동일한 S3 API로 MinIO(로컬)와 실제 S3(배포)를 모두 다룬다.
 - 크롤러는 단발성 도구다. 클러스터에 배포하지 않고 개발자 머신/CI에서만 실행한다 (constitution VII).
 - 사용자 요청 반영: **(1) 크롤링을 먼저** 한다(M02), **(2) AWS 인프라는 S3만 먼저** 만든다(M03, EKS는 M07로 미룸), **(3) S3는 재사용 모듈로** 만들고 인스턴스 2개(tfstate remote backend+locking용, 문제 저장용)를 둔다.
@@ -32,8 +32,11 @@
 ## Executor 룰
 
 - **기본 executor는 codex.** 크롤러, 백엔드, 계약, 테스트, 프론트엔드 코드, Terraform까지 전부 Codex가 담당한다.
-- **마지막 large-task(M09)만 claude.** 디렉터리 구조 점검, 컴포넌트 일관성, 디자인 시스템 정리, a11y/responsive/motion, 라이브 렌더 점검, 그리고 최종 커밋.
-- **Codex는 절대 커밋하지 않는다.** 커밋은 M09에서만.
+- **마지막 large-task(M09)만 claude.** 디렉터리 구조 점검, 컴포넌트 일관성, 디자인 시스템 정리, a11y/responsive/motion, 라이브 렌더 점검, 그리고 UI/UX polish 커밋.
+- **커밋은 large-task당 1개.** 각 Mxx의 codex subtask가 전부 끝나고 **검증 명령이 통과한 뒤**, Codex가 그 작업물을 해당 Mxx의 "예상 커밋 메시지"로 커밋한다. M09는 Claude가 커밋한다. (이전 "Codex는 절대 커밋 안 함 / M09 일괄" 정책은 폐기됨.)
+  - 경계는 large-task다 — **subtask 단위 커밋 금지**. 검증 실패 시 커밋하지 않는다.
+  - `git push`는 하지 않는다(커밋까지만). push는 사용자/Claude가 수행.
+  - 커밋 메시지는 영문 conventional commit, 끝에 `(Mxx)` 표기. co-author 트레일러는 실행 에이전트 기준.
 - 각 subtask의 `skill: <name>`은 `/task-run` 시 Skill 도구로 호출되고, Codex CLI에서는 해당 스킬의 의도를 따라야 한다.
 - **모든 로컬 실행은 docker compose 컨테이너 안에서.** 호스트에서 직접 실행하지 않는다.
 
@@ -56,7 +59,7 @@
   - `docker compose up -d && docker compose ps` (모든 서비스 healthy)
   - `docker compose run --rm api python -c "print('ok')"`
   - `docker compose down -v`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `chore(scaffold): docker compose stack + repo skeleton (M01)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
@@ -68,41 +71,43 @@
 
 ---
 
-## [ ] M02 — 크롤러 (Go): krdump SAP-C02 수집 → S3(MinIO)
+## [x] M02 — 크롤러 (Go): krdump SAP-C02 수집 → S3(MinIO)
 
 - **목적 (Purpose)**: rate-limit을 지키며 SAP-C02 문제를 수집해 검증된 `questions.json`을 S3(로컬은 MinIO)에 업로드한다. **사용자 요청: 크롤링을 가장 먼저 완성.**
 - **명세 참조**: spec.md (Out of scope=크롤러는 별도지만 본 MVP의 첫 작업), plan.md §crawler, research.md D-001, constitution VII
 - **주 Executor**: codex
 - **Skill routing**:
   - `go-go` — Go 핸들러/동시성/에러 처리/테스트
+- **정식 소스 (Canonical source)**: `https://www.krdump.com/Amazon.SAP-C02.v2025-11-26.q476.html?p=N`, 범위 **p=2 … p=97**. 페이지당 5문제이며 p=97은 q476 기준 476번 1개만 있어도 정상으로 허용한다.
 - **완료 정의 (DoD)**:
-  - [ ] `questions.json` 스키마가 data-model.md Exam/Question/Choice와 일치
-  - [ ] rate limiter(≤1 req/2s) + 429/5xx exponential backoff 단위 테스트 통과
-  - [ ] robots.txt 준수 + 진실한 User-Agent
-  - [ ] 단일/다중 정답 파싱 분기 골든 픽스처 테스트 통과
-  - [ ] 중복 제거 + 정렬 결정성 테스트 통과
-  - [ ] MinIO로 업로드 성공 (로컬 통합)
-  - [ ] 네트워크 없이 `crawler/testdata/*.html` 픽스처로 전 분기 테스트 가능
-- **테스트 전략**: httptest 서버로 오프라인 픽스처 기반. 실제 krdump 호출은 `make crawl` 수동 실행에서만.
+  - [x] `questions.json` 스키마가 data-model.md Exam/Question/Choice와 일치
+  - [x] rate limiter(1 page/2m) + 429/5xx/too-much-request 10분 대기 후 1회 재시도 단위 테스트 통과
+  - [x] robots.txt 준수 + 진실한 User-Agent
+  - [x] 단일/다중 정답/선지 1개 파싱 분기 골든 픽스처 테스트 통과
+  - [x] 중복 제거 + 정렬 결정성 테스트 통과
+  - [x] MinIO로 업로드 성공 (로컬 통합)
+  - [x] 네트워크 없이 `crawler/testdata/*.html` 픽스처로 전 분기 테스트 가능
+  - [x] 페이지 checkpoint 저장 후 재개 시 저장된 마지막 페이지 다음부터 진행
+- **테스트 전략**: httptest/fixture 기반 오프라인 테스트가 기본. 실제 krdump 호출은 `make crawl` 수동 실행에서만 하며 기본값은 p=2..97, 2분 간격, 페이지당 1회 재시도.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm crawler go test ./...`
   - `docker compose run --rm crawler go vet ./...`
   - `docker compose run --rm crawler gofmt -l .` (출력 없어야 함)
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(crawler): krdump SAP-C02 collector — rate-limit, parser, checkpoint, S3 upload (M02)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — 계약: `crawler/internal/pool` 의 Go 타입이 contracts/openapi.yaml의 Question/Choice 스키마와 1:1 매핑되도록 정의 (executor: codex, skill: `go-go`, doc-aligned)
-- [ ] **T011** — RED: rate-limited fetcher 실패 테스트 (token-bucket, backoff, UA 헤더) — `crawler/internal/fetcher/*_test.go` (executor: codex, skill: `go-go`)
-- [ ] **T012** — GREEN: `golang.org/x/time/rate` 기반 fetcher 구현 (executor: codex, skill: `go-go`)
-- [ ] **T013** — RED: parser 테스트 (well-formed/단일·다중정답/malformed-skip) 골든 픽스처 (executor: codex, skill: `go-go`)
-- [ ] **T014** — GREEN: goquery 기반 parser 구현 (executor: codex, skill: `go-go`)
-- [ ] **T015** — RED+GREEN: pool dedupe+정렬 결정성 + S3 uploader(aws-sdk-go-v2, MinIO endpoint) (executor: codex, skill: `go-go`)
-- [ ] **T016** — 검증: `go test ./...`, `go vet`, `gofmt -l`, `make crawl`로 MinIO 업로드 e2e (executor: codex, skill: none)
+- [x] **T010** — 계약: `crawler/internal/pool` 의 Go 타입이 contracts/openapi.yaml의 Question/Choice 스키마와 1:1 매핑되도록 정의 (executor: codex, skill: `go-go`, doc-aligned)
+- [x] **T011** — RED: rate-limited fetcher 실패 테스트 (token-bucket, backoff, UA 헤더) — `crawler/internal/fetcher/*_test.go` (executor: codex, skill: `go-go`)
+- [x] **T012** — GREEN: 2분 간격 GET + 브라우저형 UA + 10분 대기 후 1회 재시도 fetcher 구현 (executor: codex, skill: `go-go`)
+- [x] **T013** — RED: parser 테스트 (well-formed/단일·다중정답/선지 1개/마지막 페이지 예외) 골든 픽스처 (executor: codex, skill: `go-go`)
+- [x] **T014** — GREEN: goquery 기반 parser 구현 (executor: codex, skill: `go-go`)
+- [x] **T015** — RED+GREEN: pool dedupe+정렬 결정성 + checkpoint/resume + S3 uploader(aws-sdk-go-v2, MinIO endpoint) (executor: codex, skill: `go-go`)
+- [x] **T016** — 검증: `go test ./...`, `go vet`, `gofmt -l`, fixture 기반 MinIO 업로드 e2e (executor: codex, skill: none)
 
 ---
 
-## [ ] M03 — Terraform: 재사용 S3 모듈 + 버킷 2개 (S3만)
+## [x] M03 — Terraform: 재사용 S3 모듈 + 버킷 2개 (S3만)
 
 - **목적 (Purpose)**: **사용자 요청대로 AWS 인프라 중 S3만 먼저** 만든다. 재사용 S3 모듈 1개 + 인스턴스 2개: (1) tfstate remote backend & locking 버킷, (2) 문제 저장(data) 버킷. EKS는 M07로 미룬다.
 - **명세 참조**: plan.md §Technical Context(Storage, tfstate), research.md D-002/D-005, constitution I/III
@@ -125,16 +130,16 @@
   - `docker compose run --rm tf sh -c "cd infra/modules/s3-bucket && terraform init -backend=false && terraform test"`
   - `docker compose run --rm tf sh -c "cd infra/envs/dev && tflint && checkov -d ."`
   - `docker compose run --rm tf terraform -chdir=infra/envs/dev plan` (자격증명 주입 시)
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(infra): reusable S3 module + tfstate/data buckets with terraform tests (M03)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T020** — `modules/s3-bucket`: 재사용 모듈 변수(`name`, `versioning`, `force_destroy`, `lifecycle_rules`) + versioning/SSE/public-access-block 출력 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T021** — `modules/tfstate-bucket`: s3-bucket 모듈 호출 + `backend.tf`(로컬→S3 마이그레이션 절차 주석) + `use_lockfile=true` (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T022** — `modules/data-bucket`: s3-bucket 모듈 재사용, private+versioned, 크롤러 업로드 prefix(`sap-c02/`) 문서화 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T023** — `envs/dev`: 두 모듈 인스턴스화 + provider/version 핀(AWS >=5.60, TF>=1.15) + budget alert 리소스 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
-- [ ] **T024** — `modules/s3-bucket/tests/`: `.tftest.hcl` 작성 (versioning on/off, SSE-S3, public-access-block, lifecycle 변수화를 plan/mock assert로 검증). 모듈 계약 고정 (executor: codex, skill: `terraform-code-generation:terraform-test`)
-- [ ] **T025** — 검증: fmt/validate/`terraform test`/tflint/checkov 통과, plan 스모크 (executor: codex, skill: none)
+- [x] **T020** — `modules/s3-bucket`: 재사용 모듈 변수(`name`, `versioning`, `force_destroy`, `lifecycle_rules`) + versioning/SSE/public-access-block 출력 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T021** — `modules/tfstate-bucket`: s3-bucket 모듈 호출 + `backend.tf`(로컬→S3 마이그레이션 절차 주석) + `use_lockfile=true` (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T022** — `modules/data-bucket`: s3-bucket 모듈 재사용, private+versioned, 크롤러 업로드 prefix(`sap-c02/`) 문서화 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T023** — `envs/dev`: 두 모듈 인스턴스화 + provider/version 핀(AWS >=5.60, TF>=1.15) + budget alert 리소스 (executor: codex, skill: `terraform-code-generation:terraform-style-guide`)
+- [x] **T024** — `modules/s3-bucket/tests/`: `.tftest.hcl` 작성 (versioning on/off, SSE-S3, public-access-block, lifecycle 변수화를 plan/mock assert로 검증). 모듈 계약 고정 (executor: codex, skill: `terraform-code-generation:terraform-test`)
+- [x] **T025** — 검증: fmt/validate/`terraform test`/tflint/checkov 통과, plan 스모크 (executor: codex, skill: none)
 
 ---
 
@@ -158,7 +163,7 @@
   - `docker compose run --rm api python -m young_certi_api.export_openapi | diff - contracts/openapi.yaml`
   - `docker compose run --rm api ruff check . && docker compose run --rm api mypy .`
   - `docker compose run --rm api schemathesis run --app young_certi_api.main:app /openapi.json`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(api): in-memory question pool, REST endpoints, unified errors, CORS (M04)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
@@ -194,7 +199,7 @@
   - `docker compose run --rm web pnpm typecheck`
   - `docker compose run --rm web pnpm lint`
   - `docker compose run --rm web pnpm build`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(web): SAP-C02 practice screen, components, localStorage state (M05)`
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
@@ -224,7 +229,7 @@
   - `docker compose up -d minio api web`
   - `docker compose run --rm web pnpm e2e` (Playwright)
   - `docker compose down -v`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `test(e2e): local full-stack Playwright happy-path + CORS preflight (M06)`
 
 ### 하위 작업 (Subtasks)
 
@@ -256,7 +261,7 @@
   - `docker compose run --rm tf sh -c "cd infra/envs/dev && tflint && checkov -d ."`
   - `docker compose run --rm tf helm lint infra/helm/young-certi`
   - `docker compose run --rm tf terraform -chdir=infra/envs/dev plan`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(infra): ephemeral EKS + Karpenter + backend Helm chart (M07)`
 
 ### 하위 작업 (Subtasks)
 
@@ -287,7 +292,7 @@
   - `docker compose run --rm tf terraform -chdir=infra/envs/dev validate`
   - `docker compose run --rm tf sh -c "cd infra/envs/dev && checkov -d ."`
   - `docker compose run --rm tf terraform -chdir=infra/envs/dev plan`
-- **예상 커밋 메시지**: (커밋 없음 — M09에서 일괄)
+- **예상 커밋 메시지 (영문)**: `feat(infra): frontend S3+CloudFront deploy + GitHub Actions CI/CD (M08)`
 
 ### 하위 작업 (Subtasks)
 
@@ -320,7 +325,7 @@
   - `docker compose run --rm web pnpm build`
   - `docker compose up -d web && design-review` 라이브 점검
 - **예상 커밋 메시지 (영문)**:
-  - `feat(question-practice): YoungCerti SAP-C02 practice MVP with crawler, API, S3 IaC, and UI/UX polish`
+  - `style(web): UI/UX consolidation, design-system polish, a11y/responsive sweep (M09)`
 
 ### 하위 작업 (Subtasks, 고정 순서)
 

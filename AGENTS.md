@@ -22,7 +22,13 @@ You own the full implementation surface for every large-task except the final on
 - UI/UX consolidation pass: directory hygiene, component consistency, design-system polish
 - Accessibility / responsive / motion sweep across the full app
 - Live render visual audit (`design-review`)
-- **git commits** — you must never commit
+
+**Commits**: you commit **one commit per large-task** — after all codex
+subtasks in the Mxx are done and its verification commands pass, commit
+that work using the Mxx's "예상 커밋 메시지". Boundary is the large-task:
+**no per-subtask commits**, and do not commit if verification failed.
+Do **not** `git push` (commit only); the user/Claude pushes. M09's commit
+is Claude's.
 
 ## 2. Executing a large-task
 
@@ -36,16 +42,20 @@ You own the full implementation surface for every large-task except the final on
    - missing `executor` tag → skip and warn the user
 4. Follow each codex subtask's `skill: <name>` tag in spirit. `go-go` → Go best practices; `vercel-react-best-practices` → React patterns (this is a Vite SPA, so ignore SSR/RSC items, apply bundle/perf/component patterns); skills not installed → follow intent.
 5. **All local execution runs inside Docker containers.** Use `docker compose run --rm <service> <cmd>` — never run `go test`, `pytest`, `pnpm build`, `terraform`, etc. directly on the host. If `docker-compose.yml` is missing, the first subtask (T000) creates it.
-6. After all codex subtasks are done, STOP and report in Korean:
+6. After all codex subtasks are done and verification passes, **commit the
+   large-task** with its "예상 커밋 메시지" (one commit, no push). Then STOP
+   and report in Korean:
    - Completed subtask list
    - Skipped (Claude) subtask list — empty for M01–M08
-   - Changed files
+   - Changed files + the commit SHA/message you created
    - Next step: advance to the next codex large-task, or for M09 "Claude Code에서 `/task-run M09` 실행하세요."
 
 ## 3. Hard prohibitions
 
-- `git commit`, `git push` — never. Commits happen only in M09 (Claude).
-- Executing or `[x]`-marking any subtask in M09 (the Claude-owned UI/UX large-task).
+- `git push` — never (commit only; the user/Claude pushes). `git commit`
+  is allowed **once per large-task** at its boundary (see §1 Commits); never
+  per-subtask, never on failed verification.
+- Executing, committing, or `[x]`-marking any subtask in M09 (the Claude-owned UI/UX large-task).
 - Running tests, lint, build, or any tool **on the host** instead of inside a docker container.
 - Editing files outside the current large-task's scope.
 - Creating any managed RDBMS (RDS/Aurora), AWS console mutations, or long-lived AWS keys (constitution I, III).
