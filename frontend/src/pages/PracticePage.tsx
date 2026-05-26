@@ -11,8 +11,13 @@ import { SideMenu } from "../components/SideMenu";
 import { ApiError } from "../lib/error";
 import { useFavorites } from "../hooks/useFavorites";
 import { useLocalSession } from "../hooks/useLocalSession";
-import { score, usePerQuestionResult } from "../hooks/usePerQuestionResult";
+import { score, usePerQuestionResult, type Correctness } from "../hooks/usePerQuestionResult";
 import { useQuestionSets } from "../hooks/useQuestionSets";
+
+const ghostButton =
+  "min-h-11 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
+const primaryButton =
+  "min-h-11 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
 
 export function PracticePage() {
   const params = useParams();
@@ -38,15 +43,15 @@ export function PracticePage() {
     queryFn: () => fetchQuestion(examSlug, validNumber),
   });
 
-  const answered = useMemo(
-    () =>
-      new Set(
-        Object.values(results.results)
-          .filter((result) => result.examSlug === examSlug && result.submittedAt)
-          .map((result) => result.number),
-      ),
-    [examSlug, results.results],
-  );
+  const statuses = useMemo<Record<number, Correctness>>(() => {
+    const map: Record<number, Correctness> = {};
+    for (const result of Object.values(results.results)) {
+      if (result.examSlug === examSlug && result.submittedAt) {
+        map[result.number] = result.correctness;
+      }
+    }
+    return map;
+  }, [examSlug, results.results]);
 
   const question = questionQuery.data;
   const numbers = numbersQuery.data?.numbers ?? [];
@@ -61,19 +66,34 @@ export function PracticePage() {
   }, [examSlug, savedResult, validNumber]);
 
   if (error) {
-    const message = error instanceof ApiError ? error.envelope.message : "문제를 불러오지 못했습니다.";
+    const envelope = error instanceof ApiError ? error.envelope : null;
+    const message = envelope?.message ?? "문제를 불러오지 못했습니다.";
     return (
-      <main className="p-6">
-        <p className="text-rose-700">{message}</p>
-        <button type="button" onClick={() => window.location.reload()}>
-          다시 시도
-        </button>
+      <main className="flex min-h-screen items-center justify-center bg-zinc-50 p-6">
+        <div className="w-full max-w-md space-y-4 rounded-lg border border-zinc-200 bg-white p-6 text-center shadow-sm">
+          <p className="font-medium text-rose-700">{message}</p>
+          {envelope ? (
+            <p className="font-mono text-xs text-zinc-500">
+              {envelope.code} · {envelope.requestId}
+            </p>
+          ) : null}
+          <button type="button" onClick={() => window.location.reload()} className={ghostButton}>
+            다시 시도
+          </button>
+        </div>
       </main>
     );
   }
 
   if (!question) {
-    return <main className="p-6">불러오는 중</main>;
+    return (
+      <div className="flex min-h-screen flex-col bg-zinc-50 lg:flex-row">
+        <div aria-hidden className="h-12 animate-pulse bg-zinc-100 lg:h-auto lg:w-60" />
+        <main className="flex-1 p-6">
+          <p className="text-zinc-500">문제를 불러오는 중…</p>
+        </main>
+      </div>
+    );
   }
 
   function goTo(number: number) {
@@ -99,60 +119,88 @@ export function PracticePage() {
   }
 
   return (
-    <main className="grid min-h-screen grid-cols-[280px_1fr] bg-white text-zinc-950">
+    <div className="flex min-h-screen flex-col bg-zinc-50 lg:flex-row">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-zinc-900 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+      >
+        본문으로 건너뛰기
+      </a>
       <SideMenu
         numbers={numbers}
         current={validNumber}
-        answered={answered}
+        statuses={statuses}
         favorites={favorites.favorites}
         examSlug={examSlug}
         onSelect={goTo}
       />
-      <section className="space-y-5 p-6">
-        {isEphemeral ? <p className="text-amber-700">이 탭 동안만 유지돼요.</p> : null}
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-semibold">문제 {question.number}</h1>
-          <FavoriteToggle
-            active={favorites.isFavorite(examSlug, question.number)}
-            onToggle={() => favorites.toggleFavorite(examSlug, question.number)}
-          />
+      <main id="main-content" className="flex-1">
+        <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6">
+          {isEphemeral ? (
+            <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+              이 탭 동안만 유지돼요.
+            </p>
+          ) : null}
+
+          <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <header className="flex items-center justify-between gap-3">
+              <h1 className="text-2xl font-semibold text-zinc-900">
+                문제 <span className="font-mono">{question.number}</span>
+              </h1>
+              <FavoriteToggle
+                active={favorites.isFavorite(examSlug, question.number)}
+                onToggle={() => favorites.toggleFavorite(examSlug, question.number)}
+              />
+            </header>
+            <p className="text-lg leading-relaxed text-zinc-800">{question.text}</p>
+            <ChoiceList
+              choices={question.choices}
+              answerKey={question.answerKey}
+              selected={selected}
+              submitted={submitted}
+              onChange={setSelected}
+            />
+            {submitError ? <p className="text-sm text-rose-700">{submitError}</p> : null}
+          </article>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={submit} className={primaryButton}>
+              제출
+            </button>
+            <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
+              문제집에 추가
+            </button>
+            <div className="ml-auto flex gap-2">
+              <button
+                type="button"
+                disabled={index <= 0}
+                onClick={() => goTo(numbers[index - 1])}
+                className={ghostButton}
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                disabled={index === -1 || index >= numbers.length - 1}
+                onClick={() => goTo(numbers[index + 1])}
+                className={ghostButton}
+              >
+                다음
+              </button>
+            </div>
+          </div>
+
+          <ResultFeedback question={question} selected={selected} submitted={submitted} />
         </div>
-        <p>{question.text}</p>
-        <ChoiceList
-          choices={question.choices}
-          answerKey={question.answerKey}
-          selected={selected}
-          submitted={submitted}
-          onChange={setSelected}
+      </main>
+
+      {pickerOpen ? (
+        <QuestionSetPicker
+          sets={sets.sets}
+          onAdd={(name) => sets.addToSet(name, { examSlug, number: question.number })}
+          onClose={() => setPickerOpen(false)}
         />
-        {submitError ? <p className="text-rose-700">{submitError}</p> : null}
-        <div className="flex gap-2">
-          <button type="button" disabled={index <= 0} onClick={() => goTo(numbers[index - 1])}>
-            이전
-          </button>
-          <button type="button" onClick={submit}>
-            제출
-          </button>
-          <button
-            type="button"
-            disabled={index === -1 || index >= numbers.length - 1}
-            onClick={() => goTo(numbers[index + 1])}
-          >
-            다음
-          </button>
-          <button type="button" onClick={() => setPickerOpen(true)}>
-            문제집에 추가
-          </button>
-        </div>
-        <ResultFeedback question={question} selected={selected} submitted={submitted} />
-        {pickerOpen ? (
-          <QuestionSetPicker
-            sets={sets.sets}
-            onAdd={(name) => sets.addToSet(name, { examSlug, number: question.number })}
-            onClose={() => setPickerOpen(false)}
-          />
-        ) : null}
-      </section>
-    </main>
+      ) : null}
+    </div>
   );
 }

@@ -1,11 +1,34 @@
 @import "tailwindcss";
 
-button {
-  min-height: 40px;
+/* Design System tokens (plan.md §Design System) */
+@theme {
+  --font-sans: "Pretendard Variable", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    @apply bg-zinc-50 text-zinc-800 antialiased;
+  }
+
+  /* Visible focus ring for keyboard users (Design System token). */
+  :focus-visible {
+    @apply outline-none ring-2 ring-zinc-900 ring-offset-2 ring-offset-zinc-50;
+  }
 }
 
+/* Honour reduced-motion: the only motion in the MVP is the 150ms
+   favorite micro-interaction; disable it for users who opt out. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

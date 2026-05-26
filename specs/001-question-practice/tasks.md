@@ -329,9 +329,9 @@
 
 ### 하위 작업 (Subtasks, 고정 순서)
 
-- [ ] **T901** — 프론트엔드 디렉터리 전수 워크: orphan/네이밍/위치 드리프트 식별 (executor: claude, skill: `vercel-react-best-practices`)
-- [ ] **T902** — 컴포넌트 일관성 감사: plan.md 토큰(간격·색·타이포)·primitive 재사용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T903** — 디자인 시스템 polish 전 화면 적용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T904** — a11y / responsive / motion sweep (executor: claude, skill: `web-design-guidelines`)
-- [ ] **T905** — `design-review`로 라이브 렌더 시각 감사 (executor: claude, skill: `design-review`)
+- [x] **T901** — 프론트엔드 디렉터리 전수 워크: orphan/네이밍/위치 드리프트 식별 (executor: claude, skill: `vercel-react-best-practices`)
+- [x] **T902** — 컴포넌트 일관성 감사: plan.md 토큰(간격·색·타이포)·primitive 재사용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T903** — 디자인 시스템 polish 전 화면 적용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T904** — a11y / responsive / motion sweep (executor: claude, skill: `web-design-guidelines`)
+- [x] **T905** — `design-review`로 라이브 렌더 시각 감사 (executor: claude, skill: `design-review`)
 - [ ] **T906** — 최종 git commit (executor: claude, skill: none)

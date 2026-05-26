@@ -76,7 +76,7 @@ describe("practice components", () => {
       <SideMenu
         numbers={[1, 2]}
         current={1}
-        answered={new Set([2])}
+        statuses={{ 2: "correct" }}
         favorites={new Set(["sap-c02:1"])}
         examSlug="sap-c02"
         onSelect={onSelect}
@@ -84,7 +84,7 @@ describe("practice components", () => {
     );
 
     expect(screen.getByLabelText("즐겨찾기 1")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "문제 2" }));
+    await user.click(screen.getByRole("link", { name: "문제 2" }));
     expect(onSelect).toHaveBeenCalledWith(2);
   });
 
