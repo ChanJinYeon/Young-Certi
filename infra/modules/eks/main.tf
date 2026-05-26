@@ -350,25 +350,24 @@ resource "helm_release" "karpenter" {
   chart      = "karpenter"
   version    = var.karpenter_chart_version
 
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.karpenter_controller[0].arn
-  }
-
-  set {
-    name  = "settings.clusterName"
-    value = aws_eks_cluster.this[0].name
-  }
-
-  set {
-    name  = "settings.clusterEndpoint"
-    value = aws_eks_cluster.this[0].endpoint
-  }
-
-  set {
-    name  = "settings.interruptionQueue"
-    value = aws_sqs_queue.karpenter_interruption[0].name
-  }
+  set = [
+    {
+      name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value = aws_iam_role.karpenter_controller[0].arn
+    },
+    {
+      name  = "settings.clusterName"
+      value = aws_eks_cluster.this[0].name
+    },
+    {
+      name  = "settings.clusterEndpoint"
+      value = aws_eks_cluster.this[0].endpoint
+    },
+    {
+      name  = "settings.interruptionQueue"
+      value = aws_sqs_queue.karpenter_interruption[0].name
+    },
+  ]
 
   depends_on = [
     aws_eks_node_group.bootstrap,

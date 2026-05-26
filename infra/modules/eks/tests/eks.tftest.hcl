@@ -8,7 +8,7 @@ provider "aws" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = "https://127.0.0.1"
     cluster_ca_certificate = ""
     token                  = "test"
