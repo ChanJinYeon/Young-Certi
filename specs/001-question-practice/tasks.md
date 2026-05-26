@@ -143,7 +143,7 @@
 
 ---
 
-## [ ] M04 — 백엔드 (FastAPI): 인메모리 풀 + REST + CORS
+## [x] M04 — 백엔드 (FastAPI): 인메모리 풀 + REST + CORS
 
 - **목적 (Purpose)**: S3(MinIO)에서 questions.json을 기동 시 로드하고 5분 ETag 폴링으로 재로드하며, contracts/openapi.yaml대로 REST를 서빙한다.
 - **명세 참조**: spec.md FR-020/FR-021, plan.md §Backend, data-model.md §1, contracts/openapi.yaml, research.md D-002/D-003/D-004
@@ -167,13 +167,13 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T030** — 계약 동기화: `export_openapi.py` (FastAPI app → contracts/openapi.yaml) + pydantic v2 스키마(Exam/Question/Choice/ErrorEnvelope) (executor: codex, skill: none)
-- [ ] **T031** — RED: 풀 로더 테스트 (기동 로드, ETag 무변경 no-op, 변경+유효 swap, 변경+무효 keep-old, S3 5xx keep-old, 기동 실패 시 exit) (executor: codex, skill: none)
-- [ ] **T032** — GREEN: `pool.py` 인메모리 로더 + 5분 폴링 백그라운드 태스크 + 원자적 swap (executor: codex, skill: none)
-- [ ] **T033** — RED: 라우터 테스트 (list/single/404 envelope) + 에러 핸들러 테스트 (validation/unhandled→envelope, requestId echo) (executor: codex, skill: none)
-- [ ] **T034** — GREEN: `routers/questions.py`, `errors.py`(통일 envelope), `X-Request-Id` 미들웨어, CORS 미들웨어 (executor: codex, skill: none)
-- [ ] **T035** — 계약 테스트: schemathesis가 live app 대비 통과, openapi.yaml drift 0 (executor: codex, skill: none)
-- [ ] **T036** — 검증: pytest, ruff, mypy, schemathesis 전부 통과 (executor: codex, skill: none)
+- [x] **T030** — 계약 동기화: `export_openapi.py` (FastAPI app → contracts/openapi.yaml) + pydantic v2 스키마(Exam/Question/Choice/ErrorEnvelope) (executor: codex, skill: none)
+- [x] **T031** — RED: 풀 로더 테스트 (기동 로드, ETag 무변경 no-op, 변경+유효 swap, 변경+무효 keep-old, S3 5xx keep-old, 기동 실패 시 exit) (executor: codex, skill: none)
+- [x] **T032** — GREEN: `pool.py` 인메모리 로더 + 5분 폴링 백그라운드 태스크 + 원자적 swap (executor: codex, skill: none)
+- [x] **T033** — RED: 라우터 테스트 (list/single/404 envelope) + 에러 핸들러 테스트 (validation/unhandled→envelope, requestId echo) (executor: codex, skill: none)
+- [x] **T034** — GREEN: `routers/questions.py`, `errors.py`(통일 envelope), `X-Request-Id` 미들웨어, CORS 미들웨어 (executor: codex, skill: none)
+- [x] **T035** — 계약 테스트: schemathesis가 live app 대비 통과, openapi.yaml drift 0 (executor: codex, skill: none)
+- [x] **T036** — 검증: pytest, ruff, mypy, schemathesis 전부 통과 (executor: codex, skill: none)
 
 ---
 

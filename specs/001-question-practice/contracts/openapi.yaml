@@ -88,6 +88,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+        "422":
+          description: Invalid path parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
   /exams/{examSlug}/questions/{number}:
     parameters:
       - $ref: "#/components/parameters/ExamSlug"
@@ -110,6 +116,12 @@ paths:
                 $ref: "#/components/schemas/Question"
         "404":
           description: Unknown exam or question number
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "422":
+          description: Invalid path parameter
           content:
             application/json:
               schema:

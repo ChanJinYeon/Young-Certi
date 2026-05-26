@@ -1,0 +1,2 @@
+"""YoungCerti FastAPI backend."""
+

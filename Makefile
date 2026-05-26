@@ -9,7 +9,7 @@ test-crawler:
 	docker compose run --rm crawler go test ./...
 
 test-backend:
-	docker compose run --rm api python -c "print('backend test stub')"
+	docker compose run --rm api pytest
 
 test-frontend:
 	docker compose run --rm web node -e "console.log('frontend test stub')"
