@@ -32,9 +32,7 @@
 ## Notes
 
 - Substantial feature; question sets is a SEPARATE feature (005), not bundled here.
-- Three scope-significant assumptions flagged for /speckit-clarify: (1) timer
-  duration — meaning of "180분 + 30분" (180 base + optional 30 ESL vs fixed 210 vs
-  fixed 180); (2) question selection (random 75 per attempt); (3) pass threshold
-  (75% informational). Confirm before /speckit-plan.
+- Clarified 2026-05-27: timer = 180 min + optional 30 (ESL); selection = random 75
+  per attempt; pass = ≥75% (informational). All folded into FR-002/004/007.
 - Activates the 002 시험 모드 entry (additive change to the landing).
-- All items pass; recommend `/speckit-clarify` next (3 assumptions to confirm).
+- All items pass; ready for `/speckit-plan`.
