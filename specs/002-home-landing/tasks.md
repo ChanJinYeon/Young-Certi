@@ -69,7 +69,7 @@
 
 ---
 
-## [ ] M02 — 시험 랜딩(`/:examSlug/`): 진입 카드 + 총 문항 수 + 이어 풀기
+## [x] M02 — 시험 랜딩(`/:examSlug/`): 진입 카드 + 총 문항 수 + 이어 풀기
 
 - **목적 (Purpose)**: `/:examSlug/`에 진입 카드(문제 풀이 active, 시험 모드·문제집 disabled "준비 중") + 총 문항 수 + 이어 풀기를 구현한다.
 - **명세 참조**: spec.md FR-003~005/FR-007/FR-008/FR-011/US2/US3, plan.md §Eng·§Design Review, research.md D-003/D-005, data-model.md(total, CurrentQuestion)
@@ -77,13 +77,13 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트/상태/데이터 패칭 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `pages/ExamLandingPage.tsx` — 진입 카드 3개(문제 풀이 active → `/:examSlug/practice`, 시험 모드·문제집 disabled)
-  - [ ] `components/EntryCard.tsx` — active/disabled("준비 중" 배지 + aria-disabled, 비활성 클릭 시 네비 없음)
-  - [ ] 총 문항 수 표시 (`GET /exams/{slug}/questions`의 `total`), 실패 시 카운트 생략하고 렌더
-  - [ ] 이어 풀기: 001 `current` localStorage 읽어 저장된 문제 있으면 "이어 풀기" 노출 → `/:examSlug/practice`로 이동, 없으면 미노출
-  - [ ] 알 수 없는 `:examSlug` → "해당 시험을 찾을 수 없습니다" + 홈 링크
-  - [ ] 랜딩 컴포넌트 테스트 통과
-  - [ ] test/typecheck/lint/build 통과
+  - [x] `pages/ExamLandingPage.tsx` — 진입 카드 3개(문제 풀이 active → `/:examSlug/practice`, 시험 모드·문제집 disabled)
+  - [x] `components/EntryCard.tsx` — active/disabled("준비 중" 배지 + aria-disabled, 비활성 클릭 시 네비 없음)
+  - [x] 총 문항 수 표시 (`GET /exams/{slug}/questions`의 `total`), 실패 시 카운트 생략하고 렌더
+  - [x] 이어 풀기: 001 `current` localStorage 읽어 저장된 문제 있으면 "이어 풀기" 노출 → `/:examSlug/practice`로 이동, 없으면 미노출
+  - [x] 알 수 없는 `:examSlug` → "해당 시험을 찾을 수 없습니다" + 홈 링크
+  - [x] 랜딩 컴포넌트 테스트 통과
+  - [x] test/typecheck/lint/build 통과
 - **테스트 전략**: vitest + RTL. active vs disabled 진입, 카운트 present/absent, 이어 풀기 present/absent, unknown slug. fetch/localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -94,10 +94,10 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T020** — RED: ExamLandingPage/EntryCard 테스트 (active→practice 네비, disabled 무네비+"준비 중", 카운트 present/absent, 이어 풀기 present/absent, unknown slug) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T021** — GREEN: `components/EntryCard.tsx` (active/disabled 상태) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T022** — GREEN: `pages/ExamLandingPage.tsx` (카드 배치 + 총 문항 수 fetch + 이어 풀기 localStorage read + unknown slug 처리) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T023** — 검증: test/typecheck/lint/build 통과 + 001 무회귀 (executor: codex, skill: none)
+- [x] **T020** — RED: ExamLandingPage/EntryCard 테스트 (active→practice 네비, disabled 무네비+"준비 중", 카운트 present/absent, 이어 풀기 present/absent, unknown slug) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T021** — GREEN: `components/EntryCard.tsx` (active/disabled 상태) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T022** — GREEN: `pages/ExamLandingPage.tsx` (카드 배치 + 총 문항 수 fetch + 이어 풀기 localStorage read + unknown slug 처리) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T023** — 검증: test/typecheck/lint/build 통과 + 001 무회귀 (executor: codex, skill: none)
 
 ---
 
