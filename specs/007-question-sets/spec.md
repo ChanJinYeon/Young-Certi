@@ -11,6 +11,14 @@ reserved 문제집 entry from feature 002 so the learner can see their saved set
 a set and solve the questions in it, and manage sets. (Sets are already created via
 001's "문제집에 추가".)
 
+## Clarifications
+
+### Session 2026-05-27
+
+- Q: How is a set "opened/solved"? → A: A practice-scoped solve — same selection/green-red feedback/explanation/prev-next as practice, but limited to the set's questions.
+- Q: Are set-solving results shared with practice? → A: **Separate per set** — set results are stored independently of practice (and of other sets), not shared by question identity.
+- Q: Management scope? → A: Delete-set and remove-question (with confirm); rename is deferred.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - See and open my question sets (Priority: P1)
@@ -53,9 +61,9 @@ questions (prev/next stays within the set), answer, and see feedback like practi
 1. **Given** an opened set with N questions, **When** the learner solves a question,
    **Then** they see the same green/red feedback + explanation as practice, and
    prev/next move only within the set's N questions.
-2. **Given** a set question the learner answered before in practice, **When** it is
-   shown in the set, **Then** its saved result is consistent (results are shared by
-   question — answering in a set and in practice refer to the same question).
+2. **Given** a question the learner answered in practice, **When** it appears in a
+   set, **Then** the set tracks its own result independently — solving it in the set
+   does not change the practice result (and vice versa).
 
 ---
 
@@ -84,8 +92,8 @@ question from a set and confirm the set's count decreases.
 - The last question is removed from a set, leaving it empty → the set shows an empty
   state (or is offered for deletion); navigation does not break.
 - Opening a set with one question → prev/next are disabled appropriately.
-- Same question added to multiple sets → each set tracks it independently; solving it
-  updates the shared per-question result once.
+- Same question added to multiple sets → each set tracks its own result
+  independently; solving it in one set does not affect the others or practice.
 
 ## Requirements *(mandatory)*
 
@@ -102,24 +110,27 @@ question from a set and confirm the set's count decreases.
 - **FR-004**: Solving within a set MUST reuse the practice experience — choice
   selection (single/multi), green/red feedback, explanation — with prev/next scoped
   to the set's questions only.
-- **FR-005**: Per-question results MUST be shared by question identity — answering a
-  question in a set and in practice refer to the same saved result (no separate
-  per-set result store).
+- **FR-005**: Set-solving results MUST be stored **separately per set** (keyed by set
+  + question), independent of the practice results and of other sets — answering a
+  question within a set MUST NOT change the practice result or any other set's result.
 - **FR-006**: The learner MUST be able to delete a set (with a confirm) and remove a
   single question from an opened set; these MUST affect only the targeted set.
 - **FR-007**: A set referencing a question missing from the current pool MUST degrade
   gracefully (item marked unavailable/skipped) without breaking set navigation.
-- **FR-008**: This feature MUST add no backend, contract, or new persistent entity
-  beyond extending the existing `QuestionSet` operations; sets remain in localStorage
-  (constitution VI). Korean UI; no login.
+- **FR-008**: This feature MUST add no backend or contract change; persistence stays
+  client-side in localStorage (constitution VI). It MAY add a new per-set result
+  store and extend the existing `QuestionSet` operations. Korean UI; no login.
 
 ### Key Entities *(include if feature involves data)*
 
 - **QuestionSet** (client localStorage, owned by 001): `id`, `name`, `createdAt`,
   `questionRefs[{examSlug, number}]`. 007 adds **delete-set** and **remove-question**
   operations to the existing `useQuestionSets` hook; no shape change.
+- **SetResult** (new, client localStorage): per-set per-question results, keyed by
+  `{setId, number}` — separate from the practice `PerQuestionResult` (FR-005). Removed
+  when its set is deleted.
 - **PerQuestionResult / Question** (001): reused read — set solving reads questions
-  from the existing API and shares the practice per-question results (FR-005).
+  from the existing API; practice results are not written by set solving.
 
 ## Success Criteria *(mandatory)*
 
@@ -129,8 +140,9 @@ question from a set and confirm the set's count decreases.
   and each set shows its name and count.
 - **SC-002**: Opening a set lets the learner solve its questions with practice-style
   feedback, and prev/next never leave the set (stay within its N questions).
-- **SC-003**: Answering a question in a set and viewing the same question in practice
-  show the same result (shared per-question result), 100% of the time.
+- **SC-003**: Answering a question within a set updates only that set's result — the
+  practice result and other sets' results for the same question are unchanged
+  (verified), 100% of the time.
 - **SC-004**: Deleting a set removes it from the list; removing a question decreases
   that set's count — with no effect on other sets (verified).
 - **SC-005**: With no sets, the screen shows a clear empty state pointing to "문제집에
@@ -140,16 +152,16 @@ question from a set and confirm the set's count decreases.
 
 ## Assumptions
 
-> Scope-significant items (marked) should be confirmed in /speckit-clarify.
+> Scope-significant items confirmed in /speckit-clarify (2026-05-27).
 
-- **Solve model (confirm in clarify)**: opening a set reuses the practice paradigm
-  scoped to the set's questions (one-at-a-time, feedback, prev/next within the set) —
-  not a read-only list. Likely a set-scoped variant of the practice screen.
-- **Results shared (confirm in clarify)**: set solving shares the practice
-  per-question results (same question identity), rather than a separate per-set
-  result.
-- **Management (confirm in clarify)**: delete-set and remove-question are in scope;
-  rename-set is deferred unless requested.
+- **Solve model (confirmed)**: opening a set reuses the practice paradigm scoped to
+  the set's questions (one-at-a-time, feedback, prev/next within the set) — a
+  set-scoped variant of the practice screen, not a read-only list.
+- **Results separate per set (confirmed)**: set solving stores its own per-question
+  results keyed by set (a new `SetResult` store), independent of practice and of
+  other sets — NOT shared.
+- **Management (confirmed)**: delete-set and remove-question are in scope; rename-set
+  is deferred.
 - Sets are created by 001's "문제집에 추가" (already shipped); 007 only adds the
   viewing/solving/management screen.
 - Frontend-only, additive; reuses 001 ChoiceList/ResultFeedback/SideMenu patterns,

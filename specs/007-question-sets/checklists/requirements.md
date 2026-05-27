@@ -33,7 +33,8 @@
 
 - Activates the 002 문제집 entry; sets are created by 001's "문제집에 추가" (shipped),
   so 007 is the viewing/solving/management screen only.
-- Three scope assumptions flagged for /speckit-clarify: (1) solve model (set-scoped
-  practice vs read-only list); (2) results shared with practice; (3) management scope
-  (delete-set + remove-question; rename deferred). Confirm before /speckit-plan.
-- All items pass; recommend `/speckit-clarify` next.
+- Clarified 2026-05-27: (1) solve model = set-scoped practice; (2) results are
+  **separate per set** (new SetResult store, NOT shared with practice) — folded into
+  FR-005/SC-003/Key Entities/FR-008; (3) management = delete-set + remove-question
+  (rename deferred).
+- All items pass; ready for `/speckit-plan`.
