@@ -20,9 +20,12 @@ type Props = {
 };
 
 function dotClass(status: MenuStatus | null | undefined): string {
-  // 600 shades clear the 3:1 non-text contrast bar against white (a11y).
-  if (status === "correct" || status === "answered") return "bg-emerald-600";
+  // 600/700 shades clear the 3:1 non-text contrast bar against white (a11y).
+  if (status === "correct") return "bg-emerald-600";
   if (status === "incorrect" || status === "partial") return "bg-rose-600";
+  // Exam mode has no in-exam correctness — "answered" is a neutral mark, not green
+  // (green reads as "correct"); unanswered stays light gray.
+  if (status === "answered") return "bg-zinc-700";
   return "bg-zinc-300";
 }
 
