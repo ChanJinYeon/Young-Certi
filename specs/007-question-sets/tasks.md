@@ -69,7 +69,7 @@
 
 ---
 
-## [ ] M02 — 세트 풀이 + SetResult(per-set 격리) + E2E
+## [x] M02 — 세트 풀이 + SetResult(per-set 격리) + E2E
 
 - **목적 (Purpose)**: `/:examSlug/sets/:setId` 세트 스코프드 풀이 화면과, practice와 격리된 per-set 결과(SetResult), 문항 제거, 그리고 E2E를 만든다.
 - **명세 참조**: spec.md FR-003/004/005/007/US2/SC-002·003, plan.md §Eng·§Design Review, research.md D-002/D-003/D-005, data-model.md(SetResult)
@@ -77,13 +77,13 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트·상태·E2E
 - **완료 정의 (DoD)**:
-  - [ ] `hooks/useSetResults.ts` — per-set 결과(`{setId}` 키, `{number: result}`), save/get/clear; 001 `score` 재사용
-  - [ ] `pages/SetSolvePage.tsx` — 세트 문항 1개씩(ChoiceList·ResultFeedback), 이전/다음 세트 범위 내, 좌측 SideMenu(세트 항목), 005/006 컨트롤 배치
-  - [ ] 세트 풀이 결과는 SetResult에만 기록 — practice·다른 세트 무영향(격리)
-  - [ ] 현재 문항 "세트에서 제거" 동작(`removeQuestion`)
-  - [ ] 풀에 없는 문항 = unavailable 표시·스킵, 네비 비파괴
-  - [ ] Playwright: 랜딩 문제집 → 세트 열기 → 풀이 → 피드백
-  - [ ] test/typecheck/lint/build + e2e 통과
+  - [x] `hooks/useSetResults.ts` — per-set 결과(`{setId}` 키, `{number: result}`), save/get/clear; 001 `score` 재사용
+  - [x] `pages/SetSolvePage.tsx` — 세트 문항 1개씩(ChoiceList·ResultFeedback), 이전/다음 세트 범위 내, 좌측 SideMenu(세트 항목), 005/006 컨트롤 배치
+  - [x] 세트 풀이 결과는 SetResult에만 기록 — practice·다른 세트 무영향(격리)
+  - [x] 현재 문항 "세트에서 제거" 동작(`removeQuestion`)
+  - [x] 풀에 없는 문항 = unavailable 표시·스킵, 네비 비파괴
+  - [x] Playwright: 랜딩 문제집 → 세트 열기 → 풀이 → 피드백
+  - [x] test/typecheck/lint/build + e2e 통과
 - **테스트 전략**: vitest + RTL(격리·스코프드 네비·제거·missing) + Playwright full-stack.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -93,11 +93,11 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T020** — RED: useSetResults·SetSolvePage 테스트(스코프드 네비, 피드백, **per-set 격리**, 제거, missing 문항) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T021** — GREEN: `hooks/useSetResults.ts` (per-set 결과 저장소) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T022** — GREEN: `pages/SetSolvePage.tsx` (스코프드 풀이 + SideMenu + 제거 + missing 처리) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T023** — RED+GREEN: Playwright 랜딩→세트 열기→풀이 happy-path (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T024** — 검증: 전체 test/e2e 통과, 격리 확인, `down -v` 정상 (executor: codex, skill: none)
+- [x] **T020** — RED: useSetResults·SetSolvePage 테스트(스코프드 네비, 피드백, **per-set 격리**, 제거, missing 문항) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T021** — GREEN: `hooks/useSetResults.ts` (per-set 결과 저장소) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T022** — GREEN: `pages/SetSolvePage.tsx` (스코프드 풀이 + SideMenu + 제거 + missing 처리) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T023** — RED+GREEN: Playwright 랜딩→세트 열기→풀이 happy-path (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T024** — 검증: 전체 test/e2e 통과, 격리 확인, `down -v` 정상 (executor: codex, skill: none)
 
 ---
 
