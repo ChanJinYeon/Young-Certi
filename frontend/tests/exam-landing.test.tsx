@@ -14,6 +14,7 @@ function renderLanding(path = "/sap-c02/") {
         <Routes>
           <Route path="/:examSlug/" element={<ExamLandingPage />} />
           <Route path="/:examSlug/practice" element={<h1>문제 풀이 화면</h1>} />
+          <Route path="/:examSlug/sets" element={<h1>문제집 화면</h1>} />
           <Route path="/" element={<h1>홈</h1>} />
         </Routes>
       </MemoryRouter>
@@ -51,10 +52,22 @@ describe("ExamLandingPage", () => {
     expect(await screen.findByText("476문항")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /문제 풀이/ })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /시험 모드/ })).toBeInTheDocument();
-    expect(screen.getAllByText("준비 중")).toHaveLength(1);
+    expect(screen.queryByText("준비 중")).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("link", { name: /문제 풀이/ }));
     await waitFor(() => expect(screen.getByRole("heading", { name: "문제 풀이 화면" })).toBeInTheDocument());
+  });
+
+  it("activates the question sets entry", async () => {
+    const user = userEvent.setup();
+    stubQuestionNumbers();
+
+    renderLanding();
+
+    expect(await screen.findByRole("heading", { name: "AWS SAP-C02" })).toBeInTheDocument();
+    await user.click(screen.getByRole("link", { name: /문제집/ }));
+
+    await waitFor(() => expect(screen.getByRole("heading", { name: "문제집 화면" })).toBeInTheDocument());
   });
 
   it("omits the count when question metadata cannot be fetched", async () => {

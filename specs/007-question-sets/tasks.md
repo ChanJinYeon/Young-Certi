@@ -36,7 +36,7 @@
 
 ---
 
-## [ ] M01 — 세트 목록 + 관리 + 라우팅 + 002 카드 활성화
+## [x] M01 — 세트 목록 + 관리 + 라우팅 + 002 카드 활성화
 
 - **목적 (Purpose)**: `/:examSlug/sets` 세트 목록 화면(이름·문항 수·빈 상태·삭제)과 `useQuestionSets` 삭제/문항제거 연산을 만들고, 라우팅 + 002 문제집 카드를 활성화한다.
 - **명세 참조**: spec.md FR-001/002/006/US1·US3, plan.md §Eng·§Design Review, research.md D-001/D-004
@@ -44,13 +44,13 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트·상태 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `App.tsx`에 `/:examSlug/sets`·`/:examSlug/sets/:setId` 라우트(후자는 M02 스텁)
-  - [ ] `pages/SetsListPage.tsx` — 세트 목록(이름 + N문항), 열기 링크, 빈 상태("문제집에 추가" 안내)
-  - [ ] `useQuestionSets`에 `deleteSet(id)`(세트+SetResult 정리)·`removeQuestion(setId, ref)` 추가
-  - [ ] 세트 삭제 = 확인 모달(기존 패턴, destructive rose), 다른 세트 무영향
-  - [ ] `pages/ExamLandingPage.tsx` 문제집 EntryCard 활성화 → `/:examSlug/sets`
-  - [ ] sets-list 테스트(목록·빈 상태·열기·삭제) 통과
-  - [ ] test/typecheck/lint/build 통과 + 001~006 무회귀
+  - [x] `App.tsx`에 `/:examSlug/sets`·`/:examSlug/sets/:setId` 라우트(후자는 M02 스텁)
+  - [x] `pages/SetsListPage.tsx` — 세트 목록(이름 + N문항), 열기 링크, 빈 상태("문제집에 추가" 안내)
+  - [x] `useQuestionSets`에 `deleteSet(id)`(세트+SetResult 정리)·`removeQuestion(setId, ref)` 추가
+  - [x] 세트 삭제 = 확인 모달(기존 패턴, destructive rose), 다른 세트 무영향
+  - [x] `pages/ExamLandingPage.tsx` 문제집 EntryCard 활성화 → `/:examSlug/sets`
+  - [x] sets-list 테스트(목록·빈 상태·열기·삭제) 통과
+  - [x] test/typecheck/lint/build 통과 + 001~006 무회귀
 - **테스트 전략**: vitest + RTL. 목록 렌더·빈 상태·열기 네비·삭제 확인·격리. localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -61,11 +61,11 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — RED: SetsListPage + useQuestionSets delete/remove 테스트(목록·빈 상태·열기·삭제 확인·격리) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — GREEN: `useQuestionSets`에 `deleteSet`/`removeQuestion` (+삭제 시 SetResult 정리 훅 포인트) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — GREEN: `App.tsx` 라우트 + `pages/SetsListPage.tsx`(목록·빈 상태·삭제 모달) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — GREEN: `ExamLandingPage` 문제집 카드 활성화(→ `/:examSlug/sets`) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T014** — 검증: test/typecheck/lint/build 통과, 001~006 무회귀 (executor: codex, skill: none)
+- [x] **T010** — RED: SetsListPage + useQuestionSets delete/remove 테스트(목록·빈 상태·열기·삭제 확인·격리) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — GREEN: `useQuestionSets`에 `deleteSet`/`removeQuestion` (+삭제 시 SetResult 정리 훅 포인트) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — GREEN: `App.tsx` 라우트 + `pages/SetsListPage.tsx`(목록·빈 상태·삭제 모달) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — GREEN: `ExamLandingPage` 문제집 카드 활성화(→ `/:examSlug/sets`) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T014** — 검증: test/typecheck/lint/build 통과, 001~006 무회귀 (executor: codex, skill: none)
 
 ---
 

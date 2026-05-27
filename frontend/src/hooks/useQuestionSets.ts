@@ -50,5 +50,25 @@ export function useQuestionSets(sessionId: string) {
         ];
       });
     },
+    deleteSet: (id: string) => {
+      stored.setValue((current) => current.filter((set) => set.id !== id));
+      try {
+        localStorage.removeItem(storageKey(sessionId, `set-results/${id}`));
+      } catch {
+        // Storage can be unavailable in private/quota-restricted contexts.
+      }
+    },
+    removeQuestion: (setId: string, ref: QuestionRef) => {
+      stored.setValue((current) =>
+        current.map((set) =>
+          set.id === setId
+            ? {
+                ...set,
+                questionRefs: set.questionRefs.filter((item) => !sameRef(item, ref)),
+              }
+            : set,
+        ),
+      );
+    },
   };
 }

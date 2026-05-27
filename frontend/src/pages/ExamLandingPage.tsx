@@ -70,7 +70,11 @@ export function ExamLandingPage() {
             description="제한 시간 안에 75문항을 풀고 결과를 확인합니다."
             to={`/${examSlug}/exam`}
           />
-          <EntryCard title="문제집" description="사용자 지정 문제 묶음은 준비 중입니다." disabled />
+          <EntryCard
+            title="문제집"
+            description="저장한 문제 묶음을 열고 관리합니다."
+            to={`/${examSlug}/sets`}
+          />
         </section>
       </div>
     </main>

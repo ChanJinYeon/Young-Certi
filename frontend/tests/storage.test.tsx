@@ -65,5 +65,66 @@ describe("localStorage hooks", () => {
     expect(hook.result.current.sets).toHaveLength(1);
     expect(hook.result.current.sets[0].questionRefs).toEqual([{ examSlug: "sap-c02", number: 1 }]);
   });
-});
 
+  it("deletes only the targeted set and removes its set-scoped results", () => {
+    localStorage.setItem(
+      "young-certi/v1/session-1/sets",
+      JSON.stringify([
+        {
+          id: "set-1",
+          name: "Review",
+          createdAt: "2026-05-27T00:00:00.000Z",
+          questionRefs: [{ examSlug: "sap-c02", number: 1 }],
+        },
+        {
+          id: "set-2",
+          name: "Hard",
+          createdAt: "2026-05-27T00:00:00.000Z",
+          questionRefs: [{ examSlug: "sap-c02", number: 2 }],
+        },
+      ]),
+    );
+    localStorage.setItem("young-certi/v1/session-1/set-results/set-1", JSON.stringify({ 1: { selected: ["A"] } }));
+    localStorage.setItem("young-certi/v1/session-1/set-results/set-2", JSON.stringify({ 2: { selected: ["B"] } }));
+    const hook = renderHook(() => useQuestionSets("session-1"));
+
+    act(() => hook.result.current.deleteSet("set-1"));
+
+    expect(hook.result.current.sets.map((set) => set.id)).toEqual(["set-2"]);
+    expect(localStorage.getItem("young-certi/v1/session-1/set-results/set-1")).toBeNull();
+    expect(localStorage.getItem("young-certi/v1/session-1/set-results/set-2")).toContain("B");
+  });
+
+  it("removes a question from only the targeted set", () => {
+    localStorage.setItem(
+      "young-certi/v1/session-1/sets",
+      JSON.stringify([
+        {
+          id: "set-1",
+          name: "Review",
+          createdAt: "2026-05-27T00:00:00.000Z",
+          questionRefs: [
+            { examSlug: "sap-c02", number: 1 },
+            { examSlug: "sap-c02", number: 2 },
+          ],
+        },
+        {
+          id: "set-2",
+          name: "Hard",
+          createdAt: "2026-05-27T00:00:00.000Z",
+          questionRefs: [{ examSlug: "sap-c02", number: 1 }],
+        },
+      ]),
+    );
+    const hook = renderHook(() => useQuestionSets("session-1"));
+
+    act(() => hook.result.current.removeQuestion("set-1", { examSlug: "sap-c02", number: 1 }));
+
+    expect(hook.result.current.sets.find((set) => set.id === "set-1")?.questionRefs).toEqual([
+      { examSlug: "sap-c02", number: 2 },
+    ]);
+    expect(hook.result.current.sets.find((set) => set.id === "set-2")?.questionRefs).toEqual([
+      { examSlug: "sap-c02", number: 1 },
+    ]);
+  });
+});
