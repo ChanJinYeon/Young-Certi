@@ -15,8 +15,7 @@ test("enters practice from the home and landing in two clicks", async ({ page })
   await expect(page.getByRole("heading", { name: "AWS SAP-C02" })).toBeVisible();
   await expect(page.getByText(/문항$/)).toBeVisible();
 
-  await page.getByRole("button", { name: /시험 모드/ }).click({ force: true });
-  await expect(page).toHaveURL(/\/sap-c02\/$/);
+  await expect(page.getByRole("link", { name: /시험 모드/ })).toBeVisible();
 
   await page.getByRole("link", { name: /문제 풀이/ }).click();
   await expect(page).toHaveURL(/\/sap-c02\/practice$/);

@@ -103,7 +103,7 @@
 
 ---
 
-## [ ] M03 — 결과/리뷰 + 로컬 E2E
+## [x] M03 — 결과/리뷰 + 로컬 E2E
 
 - **목적 (Purpose)**: 제출 후 결과 화면(점수·합격 배지·문항별 리뷰)과, 전체 스택 E2E(시작→응답→제출→결과, 자동제출/resume)를 만든다.
 - **명세 참조**: spec.md FR-007/US3/SC-001~006, plan.md §Design Review, quickstart.md
@@ -111,11 +111,11 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 결과 컴포넌트·E2E
 - **완료 정의 (DoD)**:
-  - [ ] `components/ExamResult.tsx` — 총점(정답/total·%)·합격(≥75%) 배지(emerald/zinc)·문항별 리뷰(내 답 vs 정답 + 해설)
-  - [ ] ExamPage `submitted` 상태에서 결과 렌더
-  - [ ] Playwright: 시작→몇 문항 응답→제출→결과 happy-path
-  - [ ] 자동제출(fake/주입)·resume·practice 격리 시나리오
-  - [ ] test/typecheck/lint/build + e2e 통과
+  - [x] `components/ExamResult.tsx` — 총점(정답/total·%)·합격(≥75%) 배지(emerald/zinc)·문항별 리뷰(내 답 vs 정답 + 해설)
+  - [x] ExamPage `submitted` 상태에서 결과 렌더
+  - [x] Playwright: 시작→몇 문항 응답→제출→결과 happy-path
+  - [x] 자동제출(fake/주입)·resume·practice 격리 시나리오
+  - [x] test/typecheck/lint/build + e2e 통과
 - **테스트 전략**: vitest 결과 컴포넌트 + Playwright full-stack.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -125,10 +125,10 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T030** — RED: ExamResult 테스트(점수·합격선·문항별 리뷰 렌더) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T031** — GREEN: `components/ExamResult.tsx` + ExamPage 결과 연결 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T032** — RED+GREEN: Playwright happy-path(시작→응답→제출→결과) + 자동제출/resume (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T033** — 검증: 전체 test/e2e 통과, practice 격리 확인, `down -v` 정상 (executor: codex, skill: none)
+- [x] **T030** — RED: ExamResult 테스트(점수·합격선·문항별 리뷰 렌더) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T031** — GREEN: `components/ExamResult.tsx` + ExamPage 결과 연결 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T032** — RED+GREEN: Playwright happy-path(시작→응답→제출→결과) + 자동제출/resume (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T033** — 검증: 전체 test/e2e 통과, practice 격리 확인, `down -v` 정상 (executor: codex, skill: none)
 
 ---
 

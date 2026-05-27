@@ -92,7 +92,7 @@ describe("ExamPage", () => {
     expect(screen.getByRole("dialog", { name: "시험 제출 확인" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "제출하기" }));
 
-    expect(await screen.findByRole("heading", { name: "시험 제출 완료" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "시험 결과" })).toBeInTheDocument();
     expect(screen.getByText("50%")).toBeInTheDocument();
   });
 
@@ -114,7 +114,7 @@ describe("ExamPage", () => {
     );
     renderExam();
 
-    expect(await screen.findByRole("heading", { name: "시험 제출 완료" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "시험 결과" })).toBeInTheDocument();
     expect(screen.getByText("50%")).toBeInTheDocument();
   });
 

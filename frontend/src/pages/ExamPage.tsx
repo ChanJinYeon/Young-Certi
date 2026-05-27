@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
 import { ExamNavigator } from "../components/ExamNavigator";
+import { ExamResult } from "../components/ExamResult";
 import { ExamTimer } from "../components/ExamTimer";
 import { useExamAttempt } from "../hooks/useExamAttempt";
 import { useLocalSession } from "../hooks/useLocalSession";
@@ -35,6 +36,11 @@ export function ExamPage() {
     queryKey: ["exam-question", examSlug, currentNumber],
     queryFn: () => fetchQuestion(examSlug, currentNumber),
     enabled: Boolean(attempt && attempt.status === "in-progress"),
+  });
+  const resultQuestionsQuery = useQuery({
+    queryKey: ["exam-result-questions", examSlug, attempt?.questionNumbers],
+    queryFn: () => Promise.all((attempt?.questionNumbers ?? []).map((number) => fetchQuestion(examSlug, number))),
+    enabled: Boolean(attempt && attempt.status === "submitted"),
   });
   const answered = useMemo(() => new Set(Object.keys(attempt?.answers ?? {}).map(Number)), [attempt?.answers]);
 
@@ -87,13 +93,12 @@ export function ExamPage() {
   if (attempt?.status === "submitted") {
     return (
       <main className="min-h-screen bg-zinc-50">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-8 sm:px-6 lg:py-12">
-          <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
-          <h1 className="text-3xl font-semibold text-zinc-950">시험 제출 완료</h1>
-          <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-zinc-500">점수</p>
-            <p className="font-mono text-4xl font-semibold text-zinc-950">{attempt.score?.percent ?? 0}%</p>
-          </div>
+        <div className="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 lg:py-12">
+          {resultQuestionsQuery.data ? (
+            <ExamResult attempt={attempt} questions={resultQuestionsQuery.data} />
+          ) : (
+            <p className="text-zinc-500">결과를 불러오는 중...</p>
+          )}
         </div>
       </main>
     );
