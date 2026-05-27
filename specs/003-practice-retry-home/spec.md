@@ -9,6 +9,13 @@
 **Input**: User description: "Add two controls to the question-practice screen:
 (1) a 다시 풀기 (retry) button, (2) a 홈 화면으로 가는 (go to home) button."
 
+## Clarifications
+
+### Session 2026-05-27
+
+- Q: Does "다시 풀기" reset the current question only, or the whole session? → A: The current question only — clears its selection, feedback, and saved result; other questions, favorites, and question sets are unchanged.
+- Q: Where does "홈으로" navigate — the root home `/` or the exam landing `/:examSlug/`? → A: The root home `/` (the feature-002 multi-certification home).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Retry the current question (Priority: P1)

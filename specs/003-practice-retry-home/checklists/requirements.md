@@ -32,8 +32,7 @@
 ## Notes
 
 - Scope: two additive controls on the existing practice screen. Reuses 001/002.
-- Key assumption flagged for /speckit-clarify: "다시 풀기" resets the current
-  question only (not the whole session) and clears its saved result. If a
-  full-session reset is desired instead, revisit FR-001/FR-002/SC-003.
-- All items pass; ready for `/speckit-clarify` (to confirm the reset-scope
-  assumption) or `/speckit-plan`.
+- Clarified 2026-05-27: "다시 풀기" resets the current question only (clears its
+  saved result); "홈으로" navigates to the root home `/`. Both confirm the
+  original assumptions — no FR change needed.
+- All items pass; ready for `/speckit-plan`.
