@@ -33,10 +33,8 @@
 
 - Presentation/layout refactor over existing practice (001/003) + exam (004) screens;
   question sets is a separate feature (006).
-- Assumption to confirm in /speckit-clarify: "corner" placement is interpreted as a
-  control row above the question (home left / submit right) and below (add-to-set left
-  / prev-next right); exam keeps the same scheme with a left question-list sidebar
-  numbered 1–N. If a different anchoring is intended (e.g., absolutely-positioned page
-  corners), revisit FR-001/003/005/007.
+- Clarified 2026-05-27: "corner" = control rows above/below the question (home left /
+  submit right above; add-to-set left / prev-next right below); exam reuses the
+  practice side-menu pattern for its left list numbered 1–N. Both confirm the spec.
 - Behavior must not regress (FR-004/009); exam 홈으로 preserves the in-progress attempt.
-- All items pass; ready for `/speckit-clarify` or `/speckit-plan`.
+- All items pass; ready for `/speckit-plan`.

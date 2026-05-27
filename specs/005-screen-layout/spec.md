@@ -11,6 +11,13 @@ screens to fixed corners around the question, and give the exam screen a left
 question list (numbered 1–75) plus a home button. (Question sets is a separate
 feature.)
 
+## Clarifications
+
+### Session 2026-05-27
+
+- Q: How should "문제 좌상단/우상단/좌하단/우하단" be implemented structurally? → A: As control rows around the question — one row above (left = 홈으로, right = 제출), one row below (left = 문제집에 추가, right = 이전/다음). Not absolute/page corners. The exam uses the same scheme with a left question-list sidebar.
+- Q: How should the exam's left question list look/behave? → A: Like the practice screen's side menu (flat scrollable list, click-to-jump, status marker, active highlight), numbered 1…N by exam position.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Consistent corner controls on the practice screen (Priority: P1)
