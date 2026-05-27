@@ -182,14 +182,15 @@ export function PracticePage() {
             <Link to="/" className={ghostButton}>
               홈으로
             </Link>
-            <button type="button" onClick={submit} className={primaryButton}>
-              제출
-            </button>
             {submitted ? (
               <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
                 다시 풀기
               </button>
-            ) : null}
+            ) : (
+              <button type="button" onClick={submit} className={primaryButton}>
+                제출
+              </button>
+            )}
             <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
               문제집에 추가
             </button>
