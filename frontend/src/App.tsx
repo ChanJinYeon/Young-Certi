@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { ExamLandingPage } from "./pages/ExamLandingPage";
+import { ExamPage } from "./pages/ExamPage";
 import { HomePage } from "./pages/HomePage";
 import { PracticePage } from "./pages/PracticePage";
 
@@ -14,6 +15,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/:examSlug/" element={<ExamLandingPage />} />
+          <Route path="/:examSlug/exam" element={<ExamPage />} />
           <Route path="/:examSlug/practice" element={<PracticePage />} />
           <Route path="*" element={<Navigate to="/sap-c02/practice" replace />} />
         </Routes>

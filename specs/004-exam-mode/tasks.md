@@ -36,7 +36,7 @@
 
 ---
 
-## [ ] M01 — ExamAttempt 상태 + useExamAttempt 훅 + 라우트
+## [x] M01 — ExamAttempt 상태 + useExamAttempt 훅 + 라우트
 
 - **목적 (Purpose)**: 시험 attempt를 관리하는 localStorage 상태와 `useExamAttempt` 훅(시작/응답/제출/재개/채점·타이머 도출)을 만들고 `/:examSlug/exam` 라우트를 추가한다. (UI는 M02)
 - **명세 참조**: spec.md FR-002/004/005/008/009, plan.md §Eng Review, research.md D-002~005, data-model.md(ExamAttempt)
@@ -44,13 +44,13 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 훅·상태·persistence (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `hooks/useExamAttempt.ts` — ExamAttempt localStorage(`.../exam/<examSlug>`): start(랜덤 75 추출·startedAt·duration), answer, submit(채점·score), resume, status
-  - [ ] 타이머 도출: `startedAt + durationMinutes`에서 remaining 계산(wall-clock), 0 이하면 만료 판정
-  - [ ] 채점: 001 `score`로 정답률 계산, `pass = percent >= 75`
-  - [ ] practice `results`/`favorites`/`sets`와 격리(별도 키)
-  - [ ] `App.tsx`에 `/:examSlug/exam` 라우트 추가(화면은 M02 최소 스텁)
-  - [ ] 훅 단위 테스트(선택 75/부족 시 전체, remaining 계산, 만료, 채점·합격선, resume, 격리) 통과
-  - [ ] test/typecheck/lint/build 통과 + 001/002/003 무회귀
+  - [x] `hooks/useExamAttempt.ts` — ExamAttempt localStorage(`.../exam/<examSlug>`): start(랜덤 75 추출·startedAt·duration), answer, submit(채점·score), resume, status
+  - [x] 타이머 도출: `startedAt + durationMinutes`에서 remaining 계산(wall-clock), 0 이하면 만료 판정
+  - [x] 채점: 001 `score`로 정답률 계산, `pass = percent >= 75`
+  - [x] practice `results`/`favorites`/`sets`와 격리(별도 키)
+  - [x] `App.tsx`에 `/:examSlug/exam` 라우트 추가(화면은 M02 최소 스텁)
+  - [x] 훅 단위 테스트(선택 75/부족 시 전체, remaining 계산, 만료, 채점·합격선, resume, 격리) 통과
+  - [x] test/typecheck/lint/build 통과 + 001/002/003 무회귀
 - **테스트 전략**: vitest. fake timers + 과거 `startedAt`으로 만료/remaining, fetch/localStorage stub로 선택·채점·resume·격리.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -61,10 +61,10 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — RED: `useExamAttempt` 테스트 — start(랜덤 75/부족), answer, submit 채점(정답률·pass≥75%), remaining(wall-clock)·만료, resume, 격리 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — GREEN: `hooks/useExamAttempt.ts` + ExamAttempt 타입/스토리지 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — GREEN: `App.tsx` `/:examSlug/exam` 라우트 + `pages/ExamPage.tsx` 최소 스텁(상태 표시) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — 검증: test/typecheck/lint/build 통과, 001/002/003 무회귀 (executor: codex, skill: none)
+- [x] **T010** — RED: `useExamAttempt` 테스트 — start(랜덤 75/부족), answer, submit 채점(정답률·pass≥75%), remaining(wall-clock)·만료, resume, 격리 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — GREEN: `hooks/useExamAttempt.ts` + ExamAttempt 타입/스토리지 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — GREEN: `App.tsx` `/:examSlug/exam` 라우트 + `pages/ExamPage.tsx` 최소 스텁(상태 표시) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — 검증: test/typecheck/lint/build 통과, 001/002/003 무회귀 (executor: codex, skill: none)
 
 ---
 
