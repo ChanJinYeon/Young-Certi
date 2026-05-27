@@ -101,7 +101,7 @@
 
 ---
 
-## [ ] M03 — 로컬 E2E + 001 무회귀 검증
+## [x] M03 — 로컬 E2E + 001 무회귀 검증
 
 - **목적 (Purpose)**: 전체 스택을 띄워 `/` → 자격증 → 랜딩 → 문제 풀이 → practice happy-path를 Playwright로 검증하고, 001 기능이 그대로인지 확인한다.
 - **명세 참조**: spec.md SC-001/SC-006, quickstart.md acceptance walkthrough, plan.md §Eng Review
@@ -109,10 +109,10 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — E2E 셋업 관점
 - **완료 정의 (DoD)**:
-  - [ ] Playwright happy-path: `/` 홈 → SAP-C02 카드 → `/sap-c02/` 랜딩 → 문제 풀이 → practice 진입 (2 클릭, SC-001)
-  - [ ] disabled 진입(시험 모드/문제집) 클릭 시 무네비 검증 (SC-003)
-  - [ ] 이어 풀기: 한 문제 풀고 랜딩 복귀 시 "이어 풀기"가 그 문제로 재개 (SC-004)
-  - [ ] 001 deep 진입(`/sap-c02/practice`) 무회귀 + 기존 e2e 통과 (SC-006)
+  - [x] Playwright happy-path: `/` 홈 → SAP-C02 카드 → `/sap-c02/` 랜딩 → 문제 풀이 → practice 진입 (2 클릭, SC-001)
+  - [x] disabled 진입(시험 모드/문제집) 클릭 시 무네비 검증 (SC-003)
+  - [x] 이어 풀기: 한 문제 풀고 랜딩 복귀 시 "이어 풀기"가 그 문제로 재개 (SC-004)
+  - [x] 001 deep 진입(`/sap-c02/practice`) 무회귀 + 기존 e2e 통과 (SC-006)
 - **테스트 전략**: docker compose full-stack + Playwright. 기존 001 e2e와 공존.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose up -d minio api web`
@@ -122,9 +122,9 @@
 
 ### 하위 작업 (Subtasks)
 
-- [ ] **T030** — RED+GREEN: 홈→랜딩→practice happy-path 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T031** — disabled 진입 무네비 + 이어 풀기 재개 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T032** — 검증: 전체 e2e(001 포함) 통과, `down -v` 정상 (executor: codex, skill: none)
+- [x] **T030** — RED+GREEN: 홈→랜딩→practice happy-path 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T031** — disabled 진입 무네비 + 이어 풀기 재개 시나리오 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T032** — 검증: 전체 e2e(001 포함) 통과, `down -v` 정상 (executor: codex, skill: none)
 
 ---
 
