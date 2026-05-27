@@ -64,7 +64,7 @@
 
 ---
 
-## [ ] M02 — UI/UX 종합 정리 (Claude)
+## [x] M02 — UI/UX 종합 정리 (Claude)
 
 - **목적 (Purpose)**: 추가된 두 버튼을 001 디자인 시스템에 맞춰 일관성·접근성 관점에서 정리하고 커밋한다.
 - **명세 참조**: spec.md(UX), plan.md §Design(001 버튼 토큰 재사용), M01 결과
@@ -88,9 +88,9 @@
 
 ### 하위 작업 (Subtasks, 고정 순서)
 
-- [ ] **T201** — 디렉터리/구조 점검(003 신규분: PracticePage 편집·훅 메서드) (executor: claude, skill: `vercel-react-best-practices`)
-- [ ] **T202** — 버튼 일관성 감사: 001 토큰·기존 버튼 행과 정합 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T203** — 디자인 polish(위계·간격) 적용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T204** — a11y/responsive/motion sweep (executor: claude, skill: `web-design-guidelines`)
-- [ ] **T205** — `design-review`로 practice 화면 라이브 감사 (executor: claude, skill: `design-review`)
-- [ ] **T206** — 최종 git commit (executor: claude, skill: none)
+- [x] **T201** — 디렉터리/구조 점검(003 신규분: PracticePage 편집·훅 메서드) (executor: claude, skill: `vercel-react-best-practices`)
+- [x] **T202** — 버튼 일관성 감사: 001 토큰·기존 버튼 행과 정합 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T203** — 디자인 polish(위계·간격) 적용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T204** — a11y/responsive/motion sweep (executor: claude, skill: `web-design-guidelines`)
+- [x] **T205** — `design-review`로 practice 화면 라이브 감사 (executor: claude, skill: `design-review`)
+- [x] **T206** — 최종 git commit (executor: claude, skill: none)

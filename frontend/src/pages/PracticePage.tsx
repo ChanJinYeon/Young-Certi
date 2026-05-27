@@ -16,9 +16,9 @@ import { useQuestionSets } from "../hooks/useQuestionSets";
 import { storageKey, useStoredState } from "../hooks/storage";
 
 const ghostButton =
-  "min-h-11 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
+  "inline-flex min-h-11 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
 const primaryButton =
-  "min-h-11 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
+  "inline-flex min-h-11 items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
 
 export function PracticePage() {
   const params = useParams();
@@ -182,14 +182,15 @@ export function PracticePage() {
             <Link to="/" className={ghostButton}>
               홈으로
             </Link>
-            <button type="button" onClick={submit} className={primaryButton}>
-              제출
-            </button>
             {submitted ? (
               <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
                 다시 풀기
               </button>
-            ) : null}
+            ) : (
+              <button type="button" onClick={submit} className={primaryButton}>
+                제출
+              </button>
+            )}
             <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
               문제집에 추가
             </button>
