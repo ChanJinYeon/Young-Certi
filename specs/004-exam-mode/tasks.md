@@ -132,7 +132,7 @@
 
 ---
 
-## [ ] M04 — UI/UX 종합 정리 (Claude)
+## [x] M04 — UI/UX 종합 정리 (Claude)
 
 - **목적 (Purpose)**: codex가 만든 응시·결과 화면을 plan.md §Design(001 토큰) 기준으로 일관성·접근성·디렉터리 위생 관점에서 정리하고 커밋한다.
 - **명세 참조**: spec.md(UX), plan.md §Design Review(타이머 상태·합격 배지·집중 레이아웃·anti-slop), 이전 M01~M03 결과
@@ -157,9 +157,9 @@
 
 ### 하위 작업 (Subtasks, 고정 순서)
 
-- [ ] **T401** — 프론트엔드 디렉터리 전수 워크(004 신규분): orphan/네이밍/위치 (executor: claude, skill: `vercel-react-best-practices`)
-- [ ] **T402** — 컴포넌트 일관성 감사: 001 토큰·primitive 재사용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T403** — 디자인 시스템 polish 전 화면 적용(타이머·배지·응시 레이아웃) (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T404** — a11y / responsive / motion sweep (타이머 aria-live·모달·색 외 신호) (executor: claude, skill: `web-design-guidelines`)
-- [ ] **T405** — `design-review`로 응시·결과 화면 라이브 감사 (executor: claude, skill: `design-review`)
-- [ ] **T406** — 최종 git commit (executor: claude, skill: none)
+- [x] **T401** — 프론트엔드 디렉터리 전수 워크(004 신규분): orphan/네이밍/위치 (executor: claude, skill: `vercel-react-best-practices`)
+- [x] **T402** — 컴포넌트 일관성 감사: 001 토큰·primitive 재사용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T403** — 디자인 시스템 polish 전 화면 적용(타이머·배지·응시 레이아웃) (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T404** — a11y / responsive / motion sweep (타이머 aria-live·모달·색 외 신호) (executor: claude, skill: `web-design-guidelines`)
+- [x] **T405** — `design-review`로 응시·결과 화면 라이브 감사 (executor: claude, skill: `design-review`)
+- [x] **T406** — 최종 git commit (executor: claude, skill: none)

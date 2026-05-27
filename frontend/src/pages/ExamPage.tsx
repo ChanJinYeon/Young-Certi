@@ -11,9 +11,9 @@ import { useExamAttempt } from "../hooks/useExamAttempt";
 import { useLocalSession } from "../hooks/useLocalSession";
 
 const ghostButton =
-  "min-h-11 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
+  "inline-flex min-h-11 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
 const primaryButton =
-  "min-h-11 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
+  "inline-flex min-h-11 items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
 
 export function ExamPage() {
   const examSlug = useParams().examSlug ?? "sap-c02";
@@ -76,6 +76,10 @@ export function ExamPage() {
   }, [submitOpen]);
 
   function trapSubmitDialogFocus(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      setSubmitOpen(false);
+      return;
+    }
     if (event.key !== "Tab") return;
     const focusable = Array.from(submitDialogRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
     const first = focusable[0];
@@ -195,13 +199,17 @@ export function ExamPage() {
       </div>
 
       {submitOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 p-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 p-4"
+          onClick={() => setSubmitOpen(false)}
+        >
           <div
             ref={submitDialogRef}
             role="dialog"
             aria-modal="true"
             aria-label="시험 제출 확인"
             onKeyDown={trapSubmitDialogFocus}
+            onClick={(event) => event.stopPropagation()}
             className="w-full max-w-md space-y-4 rounded-lg bg-white p-5 shadow-xl"
           >
             <h2 className="text-lg font-semibold text-zinc-900">시험을 제출하시겠어요?</h2>

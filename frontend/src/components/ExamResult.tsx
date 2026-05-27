@@ -1,4 +1,5 @@
 import type { Question } from "../api/types";
+import { score as gradeChoice } from "../hooks/usePerQuestionResult";
 import type { ExamAttempt } from "../hooks/useExamAttempt";
 
 type ExamResultProps = {
@@ -53,9 +54,21 @@ export function ExamResult({ attempt, questions }: ExamResultProps) {
       <div className="space-y-3">
         {questions.map((question) => {
           const selected = attempt.answers[question.number] ?? [];
+          const correct = gradeChoice(selected, question.answerKey) === "correct";
           return (
             <article key={question.number} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-              <h2 className="text-lg font-semibold text-zinc-950">문제 {question.number}</h2>
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-lg font-semibold text-zinc-950">문제 {question.number}</h2>
+                <span
+                  className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${
+                    correct
+                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      : "border-rose-200 bg-rose-50 text-rose-700"
+                  }`}
+                >
+                  {correct ? "정답" : "오답"}
+                </span>
+              </div>
               <p className="mt-2 leading-relaxed text-zinc-800">{question.text}</p>
               <dl className="mt-4 space-y-2 text-sm">
                 <div>
