@@ -17,6 +17,14 @@ practice is active now; exam practice and question sets are reserved placeholder
 Existing 001 spec and URL (`/:examSlug/practice`) are unchanged — this is added
 alongside."
 
+## Clarifications
+
+### Session 2026-05-27
+
+- Q: Should root `/` redirect to the single certification's landing, or be a real multi-certification home now? → A: Build the multi-certification home now — root `/` lists certifications (currently one card, AWS SAP-C02); a per-certification landing lives at `/:examSlug/`.
+- Q: Include "이어 풀기" (resume at the last viewed question) in this feature? → A: Yes — reuse feature-001's localStorage saved position.
+- Q: How much should the landing display? → A: Certification name + entry cards + the total available-question count (from the read-only API); full per-question progress stats are out of scope.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Enter question practice from the landing (Priority: P1)
@@ -38,8 +46,9 @@ core "discover → enter" value on its own.
 **Acceptance Scenarios**:
 
 1. **Given** a visitor with no prior session, **When** they open the site root,
-   **Then** they see a landing identifying the AWS SAP-C02 certification and a
-   clearly clickable "문제 풀이" entry.
+   **Then** they see a home listing the AWS SAP-C02 certification as a selectable
+   card; selecting it opens the certification landing with a clearly clickable
+   "문제 풀이" entry.
 2. **Given** the SAP-C02 landing is shown, **When** the visitor activates "문제
    풀이", **Then** the existing practice screen opens and behaves exactly as in
    feature 001 (no regression).
@@ -112,9 +121,10 @@ first question).
 - **FR-001**: The system MUST present a landing screen for a certification at the
   reserved per-exam path `/:examSlug/` (e.g., `/sap-c02/`), identifying the
   certification by name in Korean.
-- **FR-002**: The site root `/` MUST resolve to a landing (for the single current
-  certification, root leads to the SAP-C02 landing). Reaching question practice from
-  the root MUST take no more than two clicks.
+- **FR-002**: The site root `/` MUST present a multi-certification home that lists
+  the available certifications as selectable cards (currently one: AWS SAP-C02).
+  Selecting a certification MUST open that certification's landing (`/:examSlug/`).
+  Reaching question practice from the root MUST take no more than two clicks.
 - **FR-003**: The landing MUST present three labelled entries — 문제 풀이, 시험 모드,
   문제집 — with exactly one (문제 풀이) active in this release.
 - **FR-004**: Activating "문제 풀이" MUST open the existing practice screen
@@ -124,10 +134,10 @@ first question).
   NOT navigate anywhere when activated.
 - **FR-006**: The landing MUST require no login and MUST NOT trigger any per-user
   back-end write; all state remains client-side/session-only (constitution VI).
-- **FR-007**: The landing MAY display read-only certification metadata (e.g., the
-  number of available questions) sourced from the existing read-only question API;
-  it MUST NOT introduce a new write path, and MUST render even when that metadata is
-  unavailable.
+- **FR-007**: The landing MUST display the certification's total available-question
+  count, sourced from the existing read-only question API; it MUST NOT introduce a
+  new write path, and MUST render gracefully (omitting the count) when that metadata
+  is unavailable. Per-question progress stats are out of scope for this feature.
 - **FR-008**: When a saved last-viewed question exists for the certification, the
   landing MUST offer a resume entry that opens practice at that question; otherwise
   the resume entry MUST be absent and practice starts at the first question.
@@ -166,13 +176,12 @@ first question).
 
 ## Assumptions
 
-- Only one certification (AWS SAP-C02) exists today. The landing is built at the
-  per-exam path `/:examSlug/`; the root `/` resolves to that single certification's
-  landing for now. A dedicated multi-certification home is deferred until a second
-  certification is added (separate future feature) — avoiding premature UI
-  (constitution: cost-aware / incremental).
+- Two screens (clarified 2026-05-27): a multi-certification home at root `/` that
+  lists certifications (currently one card, AWS SAP-C02), and a per-certification
+  landing at `/:examSlug/` with the mode entry cards.
 - This matches and refines the reserved URL surface in feature 001 (research D-009):
-  `/:examSlug/` = per-exam landing, `/:examSlug/practice` = practice.
+  `/` = multi-certification home, `/:examSlug/` = per-exam landing,
+  `/:examSlug/practice` = practice.
 - Exam mode and question sets are placeholders only here; their real functionality
   are separate future features, not part of this spec.
 - Certification metadata (name, version, question count) comes from the existing
