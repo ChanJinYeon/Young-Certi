@@ -17,6 +17,7 @@ feature.)
 
 - Q: How should "문제 좌상단/우상단/좌하단/우하단" be implemented structurally? → A: As control rows around the question — one row above (left = 홈으로, right = 제출), one row below (left = 문제집에 추가, right = 이전/다음). Not absolute/page corners. The exam uses the same scheme with a left question-list sidebar.
 - Q: How should the exam's left question list look/behave? → A: Like the practice screen's side menu (flat scrollable list, click-to-jump, status marker, active highlight), numbered 1…N by exam position.
+- Q: Keep the landing "이어 풀기" button? → A: Remove it — 문제 풀이 already resumes at the last viewed question, so it is redundant (FR-012).
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -121,6 +122,12 @@ numbered 1–75, 홈으로 is present at the top-left, 시험 제출 at the top-
   target). All controls keep visible focus and ≥44px touch targets.
 - **FR-011**: This feature MUST be additive/refactor-only — no backend, contract, or
   data change; reuse the existing design tokens; Korean labels; no login.
+
+**Certification landing**
+
+- **FR-012**: The certification landing (`/:examSlug/`) MUST remove the separate
+  "이어 풀기" control — selecting 문제 풀이 already resumes at the learner's last
+  viewed question, so the dedicated resume button is redundant.
 
 ### Key Entities *(include if feature involves data)*
 
