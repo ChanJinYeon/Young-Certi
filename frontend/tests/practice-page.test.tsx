@@ -65,20 +65,20 @@ describe("PracticePage", () => {
     const topControls = screen.getByRole("group", { name: "문제 상단 컨트롤" });
     const bottomControls = screen.getByRole("group", { name: "문제 하단 컨트롤" });
     expect(within(topControls).getByRole("link", { name: "홈으로" })).toBeInTheDocument();
-    expect(within(topControls).getByRole("button", { name: "제출" })).toBeInTheDocument();
+    expect(within(topControls).getByRole("button", { name: "이전" })).toBeInTheDocument();
+    expect(within(topControls).getByRole("button", { name: "다음" })).toBeInTheDocument();
     expect(within(bottomControls).getByRole("button", { name: "문제집에 추가" })).toBeInTheDocument();
-    expect(within(bottomControls).getByRole("button", { name: "이전" })).toBeInTheDocument();
-    expect(within(bottomControls).getByRole("button", { name: "다음" })).toBeInTheDocument();
+    expect(within(bottomControls).getByRole("button", { name: "제출" })).toBeInTheDocument();
 
-    await user.click(within(topControls).getByRole("button", { name: "제출" }));
+    await user.click(within(bottomControls).getByRole("button", { name: "제출" }));
     expect(screen.getByText("선지를 하나 이상 선택하세요.")).toBeInTheDocument();
 
     await user.click(screen.getByLabelText("A. Amazon S3"));
-    await user.click(within(topControls).getByRole("button", { name: "제출" }));
+    await user.click(within(bottomControls).getByRole("button", { name: "제출" }));
     expect(screen.getByText("S3입니다.")).toBeInTheDocument();
-    expect(within(screen.getByRole("group", { name: "문제 상단 컨트롤" })).getByRole("button", { name: "다시 풀기" })).toBeInTheDocument();
+    expect(within(screen.getByRole("group", { name: "문제 하단 컨트롤" })).getByRole("button", { name: "다시 풀기" })).toBeInTheDocument();
 
-    await user.click(within(bottomControls).getByRole("button", { name: "다음" }));
+    await user.click(within(topControls).getByRole("button", { name: "다음" }));
     await waitFor(() => expect(screen.getByText("Question 2?")).toBeInTheDocument());
   });
 

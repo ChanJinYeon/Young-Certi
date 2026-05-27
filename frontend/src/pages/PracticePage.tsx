@@ -165,15 +165,24 @@ export function PracticePage() {
             <Link to="/" className={ghostButton}>
               홈으로
             </Link>
-            {submitted ? (
-              <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
-                다시 풀기
+            <div className="flex gap-2">
+              <button
+                type="button"
+                disabled={index <= 0}
+                onClick={() => goTo(numbers[index - 1])}
+                className={ghostButton}
+              >
+                이전
               </button>
-            ) : (
-              <button type="button" onClick={submit} className={primaryButton}>
-                제출
+              <button
+                type="button"
+                disabled={index === -1 || index >= numbers.length - 1}
+                onClick={() => goTo(numbers[index + 1])}
+                className={ghostButton}
+              >
+                다음
               </button>
-            )}
+            </div>
           </div>
 
           <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
@@ -206,22 +215,15 @@ export function PracticePage() {
               문제집에 추가
             </button>
             <div className="flex gap-2">
-              <button
-                type="button"
-                disabled={index <= 0}
-                onClick={() => goTo(numbers[index - 1])}
-                className={ghostButton}
-              >
-                이전
-              </button>
-              <button
-                type="button"
-                disabled={index === -1 || index >= numbers.length - 1}
-                onClick={() => goTo(numbers[index + 1])}
-                className={ghostButton}
-              >
-                다음
-              </button>
+              {submitted ? (
+                <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
+                  다시 풀기
+                </button>
+              ) : (
+                <button type="button" onClick={submit} className={primaryButton}>
+                  제출
+                </button>
+              )}
             </div>
           </div>
 

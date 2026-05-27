@@ -58,6 +58,41 @@ function stubExamFetch() {
   );
 }
 
+function stubExamFetchWithPoolNumbers() {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url.endsWith("/exams/sap-c02/questions")) {
+        return Response.json({ examSlug: "sap-c02", version: "fixture", total: 2, numbers: [10, 20] });
+      }
+      if (url.endsWith("/exams/sap-c02/questions/10")) {
+        return Response.json({
+          examSlug: "sap-c02",
+          number: 10,
+          text: "Pool question 10?",
+          choices: [
+            { label: "A", text: "Amazon S3" },
+            { label: "B", text: "Amazon RDS" },
+          ],
+          answerKey: ["A"],
+          explanation: "S3입니다.",
+        });
+      }
+      return Response.json({
+        examSlug: "sap-c02",
+        number: 20,
+        text: "Pool question 20?",
+        choices: [
+          { label: "A", text: "Amazon EKS" },
+          { label: "B", text: "Amazon EC2" },
+        ],
+        answerKey: ["B"],
+        explanation: "EC2입니다.",
+      });
+    }),
+  );
+}
+
 describe("ExamPage", () => {
   beforeEach(() => {
     localStorage.clear();
@@ -80,10 +115,10 @@ describe("ExamPage", () => {
     const topControls = screen.getByRole("group", { name: "시험 상단 컨트롤" });
     const bottomControls = screen.getByRole("group", { name: "시험 하단 컨트롤" });
     const positionList = screen.getByRole("navigation", { name: "시험 위치 목록" });
-    expect(within(topControls).getByRole("link", { name: "홈으로" })).toBeInTheDocument();
-    expect(within(topControls).getByRole("button", { name: "시험 제출" })).toBeInTheDocument();
-    expect(within(bottomControls).getByRole("button", { name: "이전" })).toBeInTheDocument();
-    expect(within(bottomControls).getByRole("button", { name: "다음" })).toBeInTheDocument();
+    expect(within(topControls).getByRole("button", { name: "홈으로" })).toBeInTheDocument();
+    expect(within(topControls).getByRole("button", { name: "이전" })).toBeInTheDocument();
+    expect(within(topControls).getByRole("button", { name: "다음" })).toBeInTheDocument();
+    expect(within(bottomControls).getByRole("button", { name: "시험 제출" })).toBeInTheDocument();
     expect(within(positionList).getByRole("link", { name: "시험 위치 1 현재 미응답" })).toBeInTheDocument();
     expect(within(positionList).getByRole("link", { name: "시험 위치 2 미응답" })).toBeInTheDocument();
 
@@ -92,24 +127,75 @@ describe("ExamPage", () => {
     expect(screen.queryByText("정답 선택")).not.toBeInTheDocument();
     expect(screen.queryByText("S3입니다.")).not.toBeInTheDocument();
 
-    await user.click(within(bottomControls).getByRole("button", { name: "다음" }));
+    await user.click(within(topControls).getByRole("button", { name: "다음" }));
     expect(await screen.findByRole("heading", { name: "문제 2" })).toBeInTheDocument();
     await user.click(within(positionList).getByRole("link", { name: "시험 위치 1 응답됨" }));
     expect(await screen.findByRole("heading", { name: "문제 1" })).toBeInTheDocument();
     expect(screen.getByLabelText("A. Amazon S3")).toBeChecked();
 
-    await user.click(within(topControls).getByRole("link", { name: "홈으로" }));
+    await user.click(within(topControls).getByRole("button", { name: "홈으로" }));
+    expect(screen.getByRole("dialog", { name: "시험 나가기 확인" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "취소" }));
+    expect(screen.queryByRole("dialog", { name: "시험 나가기 확인" })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "문제 1" })).toBeInTheDocument();
+
+    await user.click(within(screen.getByRole("group", { name: "시험 상단 컨트롤" })).getByRole("button", { name: "홈으로" }));
+    await user.click(screen.getByRole("button", { name: "초기화하고 홈으로" }));
     expect(await screen.findByRole("heading", { name: "YoungCerti" })).toBeInTheDocument();
     const sessionId = localStorage.getItem("young-certi/sessionId");
-    expect(JSON.parse(localStorage.getItem(`young-certi/v1/${sessionId}/exam/sap-c02`) ?? "null")).toEqual(
-      expect.objectContaining({ status: "in-progress", answers: { 1: ["A"] } }),
+    expect(localStorage.getItem(`young-certi/v1/${sessionId}/exam/sap-c02`)).toBeNull();
+
+    view.unmount();
+    renderExam();
+    expect(await screen.findByRole("heading", { name: "시험 모드" })).toBeInTheDocument();
+  });
+
+  it("shows exam position in the heading and resumes on reload without reset", async () => {
+    stubExamFetchWithPoolNumbers();
+    localStorage.setItem("young-certi/sessionId", "session-1");
+    localStorage.setItem(
+      "young-certi/v1/session-1/exam/sap-c02",
+      JSON.stringify({
+        examSlug: "sap-c02",
+        questionNumbers: [10, 20],
+        answers: {},
+        startedAt: new Date().toISOString(),
+        durationMinutes: 180,
+        status: "in-progress",
+        submittedAt: null,
+        score: null,
+      }),
     );
+    const view = renderExam();
+
+    expect(await screen.findByRole("heading", { name: "문제 1" })).toBeInTheDocument();
+    expect(await screen.findByText("Pool question 10?")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("link", { name: "시험 위치 2 미응답" }));
+    expect(await screen.findByRole("heading", { name: "문제 2" })).toBeInTheDocument();
+    expect(await screen.findByText("Pool question 20?")).toBeInTheDocument();
 
     view.unmount();
     renderExam();
     expect(await screen.findByRole("heading", { name: "문제 1" })).toBeInTheDocument();
+    expect(await screen.findByText("Pool question 10?")).toBeInTheDocument();
+  });
 
-    await user.click(within(screen.getByRole("group", { name: "시험 상단 컨트롤" })).getByRole("button", { name: "시험 제출" }));
+  it("submits by confirmation from the bottom-right control", async () => {
+    const user = userEvent.setup();
+    stubExamFetch();
+
+    renderExam();
+
+    expect(await screen.findByRole("heading", { name: "시험 모드" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "시험 시작" }));
+    expect(await screen.findByRole("heading", { name: "문제 1" })).toBeInTheDocument();
+    await user.click(screen.getByLabelText("A. Amazon S3"));
+
+    await user.click(
+      within(screen.getByRole("group", { name: "시험 하단 컨트롤" })).getByRole("button", {
+        name: "시험 제출",
+      }),
+    );
     expect(screen.getByRole("dialog", { name: "시험 제출 확인" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "제출하기" }));
 

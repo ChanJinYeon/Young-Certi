@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
@@ -17,13 +17,16 @@ const primaryButton =
 
 export function ExamPage() {
   const examSlug = useParams().examSlug ?? "sap-c02";
+  const navigate = useNavigate();
   const { sessionId } = useLocalSession();
   const examAttempt = useExamAttempt(sessionId, examSlug);
   const [extraTime, setExtraTime] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [submitOpen, setSubmitOpen] = useState(false);
+  const [homeOpen, setHomeOpen] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const submitDialogRef = useRef<HTMLDivElement | null>(null);
+  const homeDialogRef = useRef<HTMLDivElement | null>(null);
 
   const numbersQuery = useQuery({
     queryKey: ["question-numbers", examSlug],
@@ -85,6 +88,12 @@ export function ExamPage() {
     buttons?.[0]?.focus();
   }, [submitOpen]);
 
+  useEffect(() => {
+    if (!homeOpen) return;
+    const buttons = homeDialogRef.current?.querySelectorAll("button");
+    buttons?.[0]?.focus();
+  }, [homeOpen]);
+
   function trapSubmitDialogFocus(event: KeyboardEvent<HTMLDivElement>) {
     if (event.key === "Escape") {
       setSubmitOpen(false);
@@ -102,6 +111,31 @@ export function ExamPage() {
       event.preventDefault();
       first.focus();
     }
+  }
+
+  function trapHomeDialogFocus(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      setHomeOpen(false);
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(homeDialogRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function resetAndGoHome() {
+    examAttempt.reset();
+    setHomeOpen(false);
+    navigate("/");
   }
 
   if (attempt?.status === "submitted") {
@@ -171,7 +205,7 @@ export function ExamPage() {
           <header className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
-              <h1 className="text-3xl font-semibold text-zinc-950">문제 {currentNumber}</h1>
+              <h1 className="text-3xl font-semibold text-zinc-950">문제 {currentIndex + 1}</h1>
             </div>
             <ExamTimer remainingSeconds={remainingSeconds} />
           </header>
@@ -181,12 +215,27 @@ export function ExamPage() {
             aria-label="시험 상단 컨트롤"
             className="flex flex-wrap items-center justify-between gap-2"
           >
-            <Link to="/" className={ghostButton}>
+            <button type="button" className={ghostButton} onClick={() => setHomeOpen(true)}>
               홈으로
-            </Link>
-            <button type="button" className={primaryButton} onClick={() => setSubmitOpen(true)}>
-              시험 제출
             </button>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className={ghostButton}
+                disabled={currentIndex <= 0}
+                onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                className={ghostButton}
+                disabled={currentIndex >= attempt.questionNumbers.length - 1}
+                onClick={() => setCurrentIndex((index) => Math.min(attempt.questionNumbers.length - 1, index + 1))}
+              >
+                다음
+              </button>
+            </div>
           </div>
 
           {question ? (
@@ -209,21 +258,8 @@ export function ExamPage() {
             aria-label="시험 하단 컨트롤"
             className="flex flex-wrap items-center justify-end gap-2"
           >
-            <button
-              type="button"
-              className={ghostButton}
-              disabled={currentIndex <= 0}
-              onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
-            >
-              이전
-            </button>
-            <button
-              type="button"
-              className={ghostButton}
-              disabled={currentIndex >= attempt.questionNumbers.length - 1}
-              onClick={() => setCurrentIndex((index) => Math.min(attempt.questionNumbers.length - 1, index + 1))}
-            >
-              다음
+            <button type="button" className={primaryButton} onClick={() => setSubmitOpen(true)}>
+              시험 제출
             </button>
           </div>
         </div>
@@ -251,6 +287,34 @@ export function ExamPage() {
               </button>
               <button type="button" className={primaryButton} onClick={() => void submitExam()}>
                 제출하기
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {homeOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 p-4"
+          onClick={() => setHomeOpen(false)}
+        >
+          <div
+            ref={homeDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="시험 나가기 확인"
+            onKeyDown={trapHomeDialogFocus}
+            onClick={(event) => event.stopPropagation()}
+            className="w-full max-w-md space-y-4 rounded-lg bg-white p-5 shadow-xl"
+          >
+            <h2 className="text-lg font-semibold text-zinc-900">홈으로 가면 시험이 초기화됩니다</h2>
+            <p className="text-sm text-zinc-600">진행 중인 답안과 남은 시간이 삭제됩니다. 계속할까요?</p>
+            <div className="flex justify-end gap-2">
+              <button type="button" className={ghostButton} onClick={() => setHomeOpen(false)}>
+                취소
+              </button>
+              <button type="button" className={primaryButton} onClick={resetAndGoHome}>
+                초기화하고 홈으로
               </button>
             </div>
           </div>

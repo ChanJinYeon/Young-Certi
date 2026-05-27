@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 export type StorageState<T> = {
   value: T;
   setValue: (next: T | ((current: T) => T)) => void;
+  removeValue: () => void;
   isEphemeral: boolean;
 };
 
@@ -29,6 +30,17 @@ function write<T>(key: string, value: T): boolean {
   }
 }
 
+function remove(key: string): boolean {
+  try {
+    localStorage.removeItem(key);
+    memory.delete(key);
+    return false;
+  } catch {
+    memory.delete(key);
+    return true;
+  }
+}
+
 export function useStoredState<T>(key: string, fallback: T): StorageState<T> {
   const initial = useMemo(() => read(key, fallback), [key, fallback]);
   const [value, setLocalValue] = useState(initial);
@@ -45,10 +57,14 @@ export function useStoredState<T>(key: string, fallback: T): StorageState<T> {
     [key],
   );
 
-  return { value, setValue, isEphemeral };
+  const removeValue = useCallback(() => {
+    setEphemeral(remove(key));
+    setLocalValue(fallback);
+  }, [fallback, key]);
+
+  return { value, setValue, removeValue, isEphemeral };
 }
 
 export function storageKey(sessionId: string, name: string): string {
   return `young-certi/v1/${sessionId}/${name}`;
 }
-

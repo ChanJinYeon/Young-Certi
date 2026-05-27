@@ -34,7 +34,7 @@
 
 ---
 
-## [ ] M01 — 컨트롤 swap + 시험 위치 헤더 + 시험 홈-초기화
+## [x] M01 — 컨트롤 swap + 시험 위치 헤더 + 시험 홈-초기화
 
 - **목적 (Purpose)**: practice·exam 컨트롤을 swap(이전·다음 우상단 / 제출 우하단)하고, exam 헤더를 위치 1~N으로, exam 홈으로를 경고+초기화로 바꾼다(`useExamAttempt.reset()` 추가). 새로고침 resume은 유지.
 - **명세 참조**: spec.md FR-001~009/US1·US2·US3, plan.md §Eng·§Design Review, research.md D-001~004, data-model.md(reset)
@@ -42,15 +42,15 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트·상태·레이아웃 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `PracticePage`: 상단 행(좌 홈으로 / 우 이전·다음), 하단 행(좌 문제집에 추가 / 우 제출·다시 풀기)
-  - [ ] `ExamPage`: 상단 행(좌 홈으로 / 우 이전·다음), 하단 행(우 시험 제출)
-  - [ ] `ExamPage` 헤더 문제 번호 = 시험 위치 `currentIndex + 1` (1~N), 좌측 리스트와 일치
-  - [ ] `useExamAttempt.reset()` 추가(ExamAttempt 키 삭제)
-  - [ ] exam 홈으로 = 경고 모달(기존 confirm 패턴 재사용) → 확인 시 reset+`/` 이동, 취소 시 유지. 재진입 시 새 시험 시작 화면
-  - [ ] 새로고침은 여전히 resume(버튼만 초기화) — 004 무회귀
-  - [ ] practice 홈으로는 기존대로 단순 이동(초기화 아님)
-  - [ ] 기존 테스트(practice-page·exam-page) 위치/동작/홈-초기화에 맞춰 갱신
-  - [ ] test/typecheck/lint/build 통과 + 001~005 무회귀
+  - [x] `PracticePage`: 상단 행(좌 홈으로 / 우 이전·다음), 하단 행(좌 문제집에 추가 / 우 제출·다시 풀기)
+  - [x] `ExamPage`: 상단 행(좌 홈으로 / 우 이전·다음), 하단 행(우 시험 제출)
+  - [x] `ExamPage` 헤더 문제 번호 = 시험 위치 `currentIndex + 1` (1~N), 좌측 리스트와 일치
+  - [x] `useExamAttempt.reset()` 추가(ExamAttempt 키 삭제)
+  - [x] exam 홈으로 = 경고 모달(기존 confirm 패턴 재사용) → 확인 시 reset+`/` 이동, 취소 시 유지. 재진입 시 새 시험 시작 화면
+  - [x] 새로고침은 여전히 resume(버튼만 초기화) — 004 무회귀
+  - [x] practice 홈으로는 기존대로 단순 이동(초기화 아님)
+  - [x] 기존 테스트(practice-page·exam-page) 위치/동작/홈-초기화에 맞춰 갱신
+  - [x] test/typecheck/lint/build 통과 + 001~005 무회귀
 - **테스트 전략**: vitest + RTL. 위치·동작, exam 헤더 1~N, 홈 경고→확인 폐기+이동+재진입 새시작·취소 유지, 새로고침 resume. fetch/localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -61,11 +61,11 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — RED: 테스트 갱신 — practice/exam 위치(이전·다음 우상단/제출 우하단), exam 헤더 1~N, 홈 경고→확인 폐기+이동+재진입 새시작·취소 유지, 새로고침 resume (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — GREEN: `hooks/useExamAttempt.ts`에 `reset()` 추가(키 삭제) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — GREEN: `pages/PracticePage.tsx` 상/하단 행 swap (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — GREEN: `pages/ExamPage.tsx` 행 swap + 헤더 위치 1~N + 홈으로 경고 모달(reset+이동) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T014** — 검증: test/typecheck/lint/build 통과, 001~005 무회귀 (executor: codex, skill: none)
+- [x] **T010** — RED: 테스트 갱신 — practice/exam 위치(이전·다음 우상단/제출 우하단), exam 헤더 1~N, 홈 경고→확인 폐기+이동+재진입 새시작·취소 유지, 새로고침 resume (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — GREEN: `hooks/useExamAttempt.ts`에 `reset()` 추가(키 삭제) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — GREEN: `pages/PracticePage.tsx` 상/하단 행 swap (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — GREEN: `pages/ExamPage.tsx` 행 swap + 헤더 위치 1~N + 홈으로 경고 모달(reset+이동) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T014** — 검증: test/typecheck/lint/build 통과, 001~005 무회귀 (executor: codex, skill: none)
 
 ---
 

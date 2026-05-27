@@ -124,7 +124,8 @@ export function useExamAttempt(sessionId: string, examSlug: string) {
           : current,
       );
     },
-    clear: () => stored.setValue(null),
+    reset: () => stored.removeValue(),
+    clear: () => stored.removeValue(),
   };
 }
 

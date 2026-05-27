@@ -56,6 +56,19 @@ describe("useExamAttempt", () => {
     expect(localStorage.getItem("young-certi/v1/session-1/sets")).toContain("Review");
   });
 
+  it("resets only the exam attempt key", () => {
+    const hook = renderHook(() => useExamAttempt("session-1", "sap-c02"));
+
+    act(() => hook.result.current.start([1, 2, 3]));
+    localStorage.setItem("young-certi/v1/session-1/results", JSON.stringify({ "sap-c02:1": { selected: ["B"] } }));
+
+    act(() => hook.result.current.reset());
+
+    expect(hook.result.current.attempt).toBeNull();
+    expect(localStorage.getItem("young-certi/v1/session-1/exam/sap-c02")).toBeNull();
+    expect(localStorage.getItem("young-certi/v1/session-1/results")).toContain("sap-c02:1");
+  });
+
   it("derives remaining time and expiration from the wall clock", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-05-27T00:00:00.000Z"));
