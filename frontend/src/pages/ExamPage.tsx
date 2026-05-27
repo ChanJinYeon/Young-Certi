@@ -14,6 +14,8 @@ const ghostButton =
   "inline-flex min-h-11 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
 const primaryButton =
   "inline-flex min-h-11 items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
+const dangerButton =
+  "inline-flex min-h-11 items-center justify-center rounded-md bg-rose-600 px-4 text-sm font-medium text-white transition-colors hover:bg-rose-700";
 
 export function ExamPage() {
   const examSlug = useParams().examSlug ?? "sap-c02";
@@ -313,7 +315,7 @@ export function ExamPage() {
               <button type="button" className={ghostButton} onClick={() => setHomeOpen(false)}>
                 취소
               </button>
-              <button type="button" className={primaryButton} onClick={resetAndGoHome}>
+              <button type="button" className={dangerButton} onClick={resetAndGoHome}>
                 초기화하고 홈으로
               </button>
             </div>

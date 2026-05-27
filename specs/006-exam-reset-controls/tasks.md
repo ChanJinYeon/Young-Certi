@@ -69,7 +69,7 @@
 
 ---
 
-## [ ] M02 — UI/UX 종합 정리 (Claude)
+## [x] M02 — UI/UX 종합 정리 (Claude)
 
 - **목적 (Purpose)**: 재배치된 컨트롤·exam 위치 헤더·홈 경고 모달을 plan.md §Design(001 토큰) 기준으로 일관성·접근성 관점에서 정리하고 커밋한다.
 - **명세 참조**: spec.md(레이아웃·경고), plan.md §Design Review, M01 결과
@@ -93,9 +93,9 @@
 
 ### 하위 작업 (Subtasks, 고정 순서)
 
-- [ ] **T201** — 프론트엔드 디렉터리/구조 점검(006 변경분) (executor: claude, skill: `vercel-react-best-practices`)
-- [ ] **T202** — 일관성 감사: 버튼 행·홈 경고 모달·토큰 정합 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T203** — 디자인 polish(위계·간격·경고 카피) 적용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T204** — a11y/responsive/motion sweep(탭 순서·모달 trap·모바일) (executor: claude, skill: `web-design-guidelines`)
-- [ ] **T205** — `design-review`로 practice·exam·홈 경고 라이브 감사 (executor: claude, skill: `design-review`)
-- [ ] **T206** — 최종 git commit (executor: claude, skill: none)
+- [x] **T201** — 프론트엔드 디렉터리/구조 점검(006 변경분) (executor: claude, skill: `vercel-react-best-practices`)
+- [x] **T202** — 일관성 감사: 버튼 행·홈 경고 모달·토큰 정합 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T203** — 디자인 polish(위계·간격·경고 카피) 적용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T204** — a11y/responsive/motion sweep(탭 순서·모달 trap·모바일) (executor: claude, skill: `web-design-guidelines`)
+- [x] **T205** — `design-review`로 practice·exam·홈 경고 라이브 감사 (executor: claude, skill: `design-review`)
+- [x] **T206** — 최종 git commit (executor: claude, skill: none)
