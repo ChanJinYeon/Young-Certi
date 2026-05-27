@@ -1,5 +1,5 @@
 import { parseApiError } from "../lib/error";
-import { questionNumbersSchema, questionSchema } from "./types";
+import { examSummariesSchema, questionNumbersSchema, questionSchema } from "./types";
 
 const configuredBaseUrl = import.meta.env.VITE_API_BASE_URL;
 const baseUrl =
@@ -23,4 +23,8 @@ export function fetchQuestionNumbers(examSlug: string) {
 
 export function fetchQuestion(examSlug: string, number: number) {
   return getJson(`/exams/${examSlug}/questions/${number}`, (value) => questionSchema.parse(value));
+}
+
+export function fetchExams() {
+  return getJson("/exams", (value) => examSummariesSchema.parse(value));
 }

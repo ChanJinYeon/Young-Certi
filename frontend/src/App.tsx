@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
+import { ExamLandingPage } from "./pages/ExamLandingPage";
+import { HomePage } from "./pages/HomePage";
 import { PracticePage } from "./pages/PracticePage";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -10,6 +12,8 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/:examSlug/" element={<ExamLandingPage />} />
           <Route path="/:examSlug/practice" element={<PracticePage />} />
           <Route path="*" element={<Navigate to="/sap-c02/practice" replace />} />
         </Routes>
@@ -17,4 +21,3 @@ export function App() {
     </QueryClientProvider>
   );
 }
-

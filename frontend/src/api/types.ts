@@ -28,8 +28,17 @@ export const questionNumbersSchema = z.object({
   numbers: z.array(z.number()),
 });
 
+export const examSummarySchema = z.object({
+  slug: z.string(),
+  displayName: z.string(),
+  version: z.string(),
+  totalQuestions: z.number(),
+});
+
+export const examSummariesSchema = z.array(examSummarySchema);
+
 export type ErrorEnvelope = z.infer<typeof errorEnvelopeSchema>;
 export type Choice = z.infer<typeof choiceSchema>;
 export type Question = z.infer<typeof questionSchema>;
 export type QuestionNumbers = z.infer<typeof questionNumbersSchema>;
-
+export type ExamSummary = z.infer<typeof examSummarySchema>;

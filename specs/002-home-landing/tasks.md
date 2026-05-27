@@ -36,7 +36,7 @@
 
 ---
 
-## [ ] M01 — 홈 화면(`/`) + exams API 클라이언트 + 라우팅
+## [x] M01 — 홈 화면(`/`) + exams API 클라이언트 + 라우팅
 
 - **목적 (Purpose)**: 루트 `/`에 자격증 목록 홈을 만들고, `GET /exams`를 소비하는 API 클라이언트와 `/`·`/:examSlug/` 라우트를 추가한다.
 - **명세 참조**: spec.md FR-001/FR-002/US1, plan.md §Project Structure·§Eng Review, research.md D-001/D-004, data-model.md(ExamSummary)
@@ -44,13 +44,13 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — React 컴포넌트/상태/데이터 패칭 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `api/client.ts`에 `fetchExams()` (`GET /exams`) 추가 + `api/types.ts`에 ExamSummary zod 스키마 (001 스키마 재사용/확장)
-  - [ ] `App.tsx`에 `/`(HomePage)·`/:examSlug/`(ExamLandingPage) 라우트 추가, `/:examSlug/practice`는 그대로
-  - [ ] `pages/HomePage.tsx` — 자격증 카드 목록(현재 SAP-C02 1개), 카드 클릭 시 `/:examSlug/`로 이동
-  - [ ] `components/CertCard.tsx` — 자격증 카드(이름 + 문항 수)
-  - [ ] exams 조회 실패 시 화면은 렌더(목록/카운트 graceful degrade)
-  - [ ] 홈 컴포넌트 테스트 통과 (목록 렌더 + 네비게이션)
-  - [ ] test/typecheck/lint/build 통과
+  - [x] `api/client.ts`에 `fetchExams()` (`GET /exams`) 추가 + `api/types.ts`에 ExamSummary zod 스키마 (001 스키마 재사용/확장)
+  - [x] `App.tsx`에 `/`(HomePage)·`/:examSlug/`(ExamLandingPage) 라우트 추가, `/:examSlug/practice`는 그대로
+  - [x] `pages/HomePage.tsx` — 자격증 카드 목록(현재 SAP-C02 1개), 카드 클릭 시 `/:examSlug/`로 이동
+  - [x] `components/CertCard.tsx` — 자격증 카드(이름 + 문항 수)
+  - [x] exams 조회 실패 시 화면은 렌더(목록/카운트 graceful degrade)
+  - [x] 홈 컴포넌트 테스트 통과 (목록 렌더 + 네비게이션)
+  - [x] test/typecheck/lint/build 통과
 - **테스트 전략**: vitest + RTL, 사용자 상호작용(카드 클릭→네비) 기반. API는 fetch stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -61,11 +61,11 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — API: `fetchExams()` + ExamSummary zod 스키마 (`GET /exams`), 001 client/types 패턴 재사용 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — 라우팅: `App.tsx`에 `/`·`/:examSlug/` 라우트 추가(랜딩은 M02에서 채울 최소 스텁), 기존 `/:examSlug/practice`·`*` 리다이렉트 보존 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — RED: HomePage/CertCard 테스트 (목록 렌더, 카드 클릭→`/:examSlug/` 네비, exams 실패 graceful) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — GREEN: `pages/HomePage.tsx` + `components/CertCard.tsx` 구현 (기능 우선, 비주얼은 M04) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T014** — 검증: test/typecheck/lint/build 통과 + 001 테스트 무회귀 확인 (executor: codex, skill: none)
+- [x] **T010** — API: `fetchExams()` + ExamSummary zod 스키마 (`GET /exams`), 001 client/types 패턴 재사용 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — 라우팅: `App.tsx`에 `/`·`/:examSlug/` 라우트 추가(랜딩은 M02에서 채울 최소 스텁), 기존 `/:examSlug/practice`·`*` 리다이렉트 보존 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — RED: HomePage/CertCard 테스트 (목록 렌더, 카드 클릭→`/:examSlug/` 네비, exams 실패 graceful) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — GREEN: `pages/HomePage.tsx` + `components/CertCard.tsx` 구현 (기능 우선, 비주얼은 M04) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T014** — 검증: test/typecheck/lint/build 통과 + 001 테스트 무회귀 확인 (executor: codex, skill: none)
 
 ---
 
