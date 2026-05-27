@@ -128,7 +128,7 @@
 
 ---
 
-## [ ] M04 — UI/UX 종합 정리 (Claude)
+## [x] M04 — UI/UX 종합 정리 (Claude)
 
 - **목적 (Purpose)**: codex가 만든 홈·랜딩을 plan.md §Design System(001 토큰) 기준으로 일관성·디자인·접근성·디렉터리 위생 관점에서 정리하고 커밋한다.
 - **명세 참조**: spec.md(UX 요구사항·US2 placeholder), plan.md §Design Review(001 토큰, 1-카드 홈 슬롭 회피, disabled 카드 이중신호), 이전 M01~M03 결과
@@ -153,9 +153,9 @@
 
 ### 하위 작업 (Subtasks, 고정 순서)
 
-- [ ] **T401** — 프론트엔드 디렉터리 전수 워크(002 신규분): orphan/네이밍/위치 드리프트 (executor: claude, skill: `vercel-react-best-practices`)
-- [ ] **T402** — 컴포넌트 일관성 감사: 001 토큰·primitive 재사용 (홈·랜딩·CertCard·EntryCard) (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T403** — 디자인 시스템 polish 전 화면 적용 (executor: claude, skill: `frontend-design:frontend-design`)
-- [ ] **T404** — a11y / responsive / motion sweep (executor: claude, skill: `web-design-guidelines`)
-- [ ] **T405** — `design-review`로 라이브 렌더 시각 감사(홈·랜딩) (executor: claude, skill: `design-review`)
-- [ ] **T406** — 최종 git commit (executor: claude, skill: none)
+- [x] **T401** — 프론트엔드 디렉터리 전수 워크(002 신규분): orphan/네이밍/위치 드리프트 (executor: claude, skill: `vercel-react-best-practices`)
+- [x] **T402** — 컴포넌트 일관성 감사: 001 토큰·primitive 재사용 (홈·랜딩·CertCard·EntryCard) (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T403** — 디자인 시스템 polish 전 화면 적용 (executor: claude, skill: `frontend-design:frontend-design`)
+- [x] **T404** — a11y / responsive / motion sweep (executor: claude, skill: `web-design-guidelines`)
+- [x] **T405** — `design-review`로 라이브 렌더 시각 감사(홈·랜딩) (executor: claude, skill: `design-review`)
+- [x] **T406** — 최종 git commit (executor: claude, skill: none)

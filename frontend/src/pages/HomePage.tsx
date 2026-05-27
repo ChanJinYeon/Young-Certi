@@ -28,7 +28,7 @@ export function HomePage() {
           <p className="text-sm font-medium text-zinc-500">자격증 문제 풀이</p>
           <h1 className="text-3xl font-semibold text-zinc-950">YoungCerti</h1>
           <p className="max-w-2xl leading-relaxed text-zinc-600">
-            준비 중인 자격증을 선택하고 바로 문제 풀이로 이동하세요.
+            응시할 자격증을 선택해 바로 문제 풀이를 시작하세요.
           </p>
         </header>
 

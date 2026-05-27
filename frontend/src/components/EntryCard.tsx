@@ -19,7 +19,7 @@ export function EntryCard({ title, description, to, disabled = false }: EntryCar
         <span className="block text-sm leading-relaxed text-zinc-600">{description}</span>
       </span>
       {disabled ? (
-        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-500">
+        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-600">
           <Lock aria-hidden size={13} />
           준비 중
         </span>

@@ -81,18 +81,17 @@ export function ExamLandingPage() {
             description="저장된 진행 상태를 유지하며 문제를 풉니다."
             to={`/${examSlug}/practice`}
           />
+          {currentQuestion ? (
+            <Link
+              to={`/${examSlug}/practice`}
+              className="inline-flex min-h-11 w-fit items-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50"
+            >
+              이어 풀기 · {currentQuestion}번
+            </Link>
+          ) : null}
           <EntryCard title="시험 모드" description="제한 시간과 채점 흐름은 준비 중입니다." disabled />
           <EntryCard title="문제집" description="사용자 지정 문제 묶음은 준비 중입니다." disabled />
         </section>
-
-        {currentQuestion ? (
-          <Link
-            to={`/${examSlug}/practice`}
-            className="inline-flex min-h-11 w-fit items-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50"
-          >
-            이어 풀기 · {currentQuestion}번
-          </Link>
-        ) : null}
       </div>
     </main>
   );
