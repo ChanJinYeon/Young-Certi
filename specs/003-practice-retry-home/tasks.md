@@ -33,7 +33,7 @@
 
 ---
 
-## [ ] M01 — 다시 풀기 + 홈으로 버튼 구현
+## [x] M01 — 다시 풀기 + 홈으로 버튼 구현
 
 - **목적 (Purpose)**: practice 화면에 "다시 풀기"(현재 문제 리셋)와 "홈으로"(`/` 이동) 버튼을 추가하고, `usePerQuestionResult`에 `clearResult`를 더한다.
 - **명세 참조**: spec.md FR-001~008/US1·US2, plan.md §Eng Review, research.md D-001~005, data-model.md(PerQuestionResult delete)
@@ -41,12 +41,12 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — React 상태/훅/컴포넌트 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `usePerQuestionResult`에 `clearResult(examSlug, number)` 추가 (해당 키 삭제)
-  - [ ] "다시 풀기": 제출 후에만 노출, 클릭 시 현재 문제 결과 삭제 + `selected/submitted` 리셋 → 사이드 dot 미응시로 복귀
-  - [ ] "홈으로": `/`로 네비, localStorage(즐겨찾기·문제집·다른 결과·현재 위치) 보존
-  - [ ] 현재 문제에만 영향(다른 문제·즐겨찾기·문제집 불변)
-  - [ ] practice-page 테스트 확장(리셋·재제출·무영향·홈 네비) 통과
-  - [ ] test/typecheck/lint/build 통과 + 001/002 무회귀
+  - [x] `usePerQuestionResult`에 `clearResult(examSlug, number)` 추가 (해당 키 삭제)
+  - [x] "다시 풀기": 제출 후에만 노출, 클릭 시 현재 문제 결과 삭제 + `selected/submitted` 리셋 → 사이드 dot 미응시로 복귀
+  - [x] "홈으로": `/`로 네비, localStorage(즐겨찾기·문제집·다른 결과·현재 위치) 보존
+  - [x] 현재 문제에만 영향(다른 문제·즐겨찾기·문제집 불변)
+  - [x] practice-page 테스트 확장(리셋·재제출·무영향·홈 네비) 통과
+  - [x] test/typecheck/lint/build 통과 + 001/002 무회귀
 - **테스트 전략**: vitest + RTL. 제출→다시 풀기→상태 초기화·결과 삭제·재제출, 홈 네비, 격리. fetch/localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -57,10 +57,10 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — RED: practice-page 테스트 확장 — 제출 후 다시 풀기 → 선택·피드백 클리어 + 저장 결과 삭제 + 재제출, 다른 문제 무영향, 홈으로→`/` 네비 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — GREEN: `hooks/usePerQuestionResult.ts`에 `clearResult(examSlug, number)` 추가 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — GREEN: `pages/PracticePage.tsx` — "다시 풀기"(제출 후 노출, clearResult+상태 리셋) + "홈으로"(`/` Link) 버튼, 기존 버튼 행에 배치 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — 검증: test/typecheck/lint/build 통과, 001/002 무회귀 (executor: codex, skill: none)
+- [x] **T010** — RED: practice-page 테스트 확장 — 제출 후 다시 풀기 → 선택·피드백 클리어 + 저장 결과 삭제 + 재제출, 다른 문제 무영향, 홈으로→`/` 네비 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — GREEN: `hooks/usePerQuestionResult.ts`에 `clearResult(examSlug, number)` 추가 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — GREEN: `pages/PracticePage.tsx` — "다시 풀기"(제출 후 노출, clearResult+상태 리셋) + "홈으로"(`/` Link) 버튼, 기존 버튼 행에 배치 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — 검증: test/typecheck/lint/build 통과, 001/002 무회귀 (executor: codex, skill: none)
 
 ---
 

@@ -13,9 +13,39 @@ function renderPractice(path = "/sap-c02/practice") {
       <MemoryRouter initialEntries={[path]}>
         <Routes>
           <Route path="/:examSlug/practice" element={<PracticePage />} />
+          <Route path="/" element={<h1>YoungCerti</h1>} />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
+  );
+}
+
+function stubTwoQuestions() {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string) => {
+      if (url.endsWith("/exams/sap-c02/questions")) {
+        return Response.json({ examSlug: "sap-c02", version: "fixture", total: 2, numbers: [1, 2] });
+      }
+      if (url.endsWith("/exams/sap-c02/questions/1")) {
+        return Response.json({
+          examSlug: "sap-c02",
+          number: 1,
+          text: "Question 1?",
+          choices: [{ label: "A", text: "Amazon S3" }],
+          answerKey: ["A"],
+          explanation: "S3입니다.",
+        });
+      }
+      return Response.json({
+        examSlug: "sap-c02",
+        number: 2,
+        text: "Question 2?",
+        choices: [{ label: "A", text: "Amazon EKS" }],
+        answerKey: ["A"],
+        explanation: "EKS입니다.",
+      });
+    }),
   );
 }
 
@@ -27,32 +57,7 @@ describe("PracticePage", () => {
 
   it("fetches a question, rejects empty submit, submits, and navigates next", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (url: string) => {
-        if (url.endsWith("/exams/sap-c02/questions")) {
-          return Response.json({ examSlug: "sap-c02", version: "fixture", total: 2, numbers: [1, 2] });
-        }
-        if (url.endsWith("/exams/sap-c02/questions/1")) {
-          return Response.json({
-            examSlug: "sap-c02",
-            number: 1,
-            text: "Question 1?",
-            choices: [{ label: "A", text: "Amazon S3" }],
-            answerKey: ["A"],
-            explanation: "S3입니다.",
-          });
-        }
-        return Response.json({
-          examSlug: "sap-c02",
-          number: 2,
-          text: "Question 2?",
-          choices: [{ label: "A", text: "Amazon EKS" }],
-          answerKey: ["A"],
-          explanation: null,
-        });
-      }),
-    );
+    stubTwoQuestions();
 
     renderPractice();
 
@@ -66,6 +71,63 @@ describe("PracticePage", () => {
 
     await user.click(screen.getByRole("button", { name: "다음" }));
     await waitFor(() => expect(screen.getByText("Question 2?")).toBeInTheDocument());
+  });
+
+  it("clears only the current question result and allows resubmission", async () => {
+    const user = userEvent.setup();
+    stubTwoQuestions();
+
+    renderPractice();
+
+    expect(await screen.findByText("Question 1?")).toBeInTheDocument();
+    await user.click(screen.getByLabelText("A. Amazon S3"));
+    await user.click(screen.getByRole("button", { name: "제출" }));
+    expect(screen.getByText("S3입니다.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "다시 풀기" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "다음" }));
+    await waitFor(() => expect(screen.getByText("Question 2?")).toBeInTheDocument());
+    await user.click(screen.getByLabelText("A. Amazon EKS"));
+    await user.click(screen.getByRole("button", { name: "제출" }));
+    expect(screen.getByText("EKS입니다.")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "이전" }));
+    await waitFor(() => expect(screen.getByText("Question 1?")).toBeInTheDocument());
+    await user.click(screen.getByRole("button", { name: "다시 풀기" }));
+
+    expect(screen.queryByText("S3입니다.")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "다시 풀기" })).not.toBeInTheDocument();
+    expect(screen.getByLabelText("A. Amazon S3")).not.toBeChecked();
+
+    const sessionId = localStorage.getItem("young-certi/sessionId");
+    expect(sessionId).toBeTruthy();
+    const stored = JSON.parse(localStorage.getItem(`young-certi/v1/${sessionId}/results`) ?? "{}");
+    expect(stored["sap-c02:1"]).toBeUndefined();
+    expect(stored["sap-c02:2"]).toEqual(expect.objectContaining({ correctness: "correct" }));
+
+    await user.click(screen.getByLabelText("A. Amazon S3"));
+    await user.click(screen.getByRole("button", { name: "제출" }));
+    expect(screen.getByText("S3입니다.")).toBeInTheDocument();
+  });
+
+  it("navigates home without clearing session state", async () => {
+    const user = userEvent.setup();
+    stubTwoQuestions();
+
+    renderPractice();
+
+    expect(await screen.findByText("Question 1?")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "즐겨찾기 추가" }));
+    await user.click(screen.getByRole("link", { name: "홈으로" }));
+
+    expect(await screen.findByRole("heading", { name: "YoungCerti" })).toBeInTheDocument();
+
+    const sessionId = localStorage.getItem("young-certi/sessionId");
+    expect(sessionId).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem(`young-certi/v1/${sessionId}/favorites`) ?? "[]")).toContain(
+      "sap-c02:1",
+    );
+    expect(JSON.parse(localStorage.getItem(`young-certi/v1/${sessionId}/current`) ?? "{}")).toEqual({});
   });
 
   it("renders API errors and retry button", async () => {
@@ -85,4 +147,3 @@ describe("PracticePage", () => {
     expect(screen.getByRole("button", { name: "다시 시도" })).toBeInTheDocument();
   });
 });
-

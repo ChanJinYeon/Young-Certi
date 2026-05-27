@@ -26,6 +26,13 @@ export function usePerQuestionResult(sessionId: string) {
         [resultKey(result.examSlug, result.number)]: result,
       }));
     },
+    clearResult: (examSlug: string, number: number) => {
+      results.setValue((current) => {
+        const next = { ...current };
+        delete next[resultKey(examSlug, number)];
+        return next;
+      });
+    },
   };
 }
 
@@ -38,4 +45,3 @@ export function score(selected: string[], answerKey: string[]): Correctness {
   if (!wrong && selected.length > 0) return "partial";
   return "incorrect";
 }
-

@@ -1,6 +1,6 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
@@ -125,6 +125,14 @@ export function PracticePage() {
     setSubmitError("");
   }
 
+  function retryCurrentQuestion() {
+    if (!question) return;
+    results.clearResult(examSlug, question.number);
+    setSelected([]);
+    setSubmitted(false);
+    setSubmitError("");
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 lg:flex-row">
       <a
@@ -171,9 +179,17 @@ export function PracticePage() {
           </article>
 
           <div className="flex flex-wrap items-center gap-2">
+            <Link to="/" className={ghostButton}>
+              홈으로
+            </Link>
             <button type="button" onClick={submit} className={primaryButton}>
               제출
             </button>
+            {submitted ? (
+              <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
+                다시 풀기
+              </button>
+            ) : null}
             <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
               문제집에 추가
             </button>
