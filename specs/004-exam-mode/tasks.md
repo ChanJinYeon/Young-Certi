@@ -68,7 +68,7 @@
 
 ---
 
-## [ ] M02 — 응시 UI: 타이머·네비게이터·무피드백·제출/자동제출
+## [x] M02 — 응시 UI: 타이머·네비게이터·무피드백·제출/자동제출
 
 - **목적 (Purpose)**: `/:examSlug/exam` 응시 화면 — 카운트다운 타이머, 문제 네비게이터, 피드백 없는 풀이, 수동 제출(확인 모달) + 시간 만료 자동 제출. 002 시험 모드 카드 활성화.
 - **명세 참조**: spec.md FR-001/003/004/005/006/011/US1·US2, plan.md §Eng·§Design Review, research.md D-001/D-006
@@ -76,14 +76,14 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트·타이머·상태 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `pages/ExamPage.tsx` 상태 구동(미시작=시작/+30 토글 → 진행 → 제출됨)
-  - [ ] `components/ExamTimer.tsx` — wall-clock 카운트다운, 잔여 적으면 amber→rose, `aria-live=polite`(매초 announce 금지)
-  - [ ] `components/ExamNavigator.tsx` — 문항 그리드(응답/미응답·현재 표시), 점프, prev/next
-  - [ ] ChoiceList 재사용하되 **시험 중 피드백 없음**(`submitted=false`), 선택만 ExamAttempt에 기록
-  - [ ] 수동 제출 = 확인 모달(002 picker 패턴, focus trap), 자동 제출 = 만료 시 즉시(확인 생략)
-  - [ ] 002 `ExamLandingPage`의 시험 모드 EntryCard 활성화 → `/:examSlug/exam` 링크
-  - [ ] 응시 UI 컴포넌트/통합 테스트 통과(무피드백·네비·제출 확인·자동제출·resume)
-  - [ ] test/typecheck/lint/build 통과
+  - [x] `pages/ExamPage.tsx` 상태 구동(미시작=시작/+30 토글 → 진행 → 제출됨)
+  - [x] `components/ExamTimer.tsx` — wall-clock 카운트다운, 잔여 적으면 amber→rose, `aria-live=polite`(매초 announce 금지)
+  - [x] `components/ExamNavigator.tsx` — 문항 그리드(응답/미응답·현재 표시), 점프, prev/next
+  - [x] ChoiceList 재사용하되 **시험 중 피드백 없음**(`submitted=false`), 선택만 ExamAttempt에 기록
+  - [x] 수동 제출 = 확인 모달(002 picker 패턴, focus trap), 자동 제출 = 만료 시 즉시(확인 생략)
+  - [x] 002 `ExamLandingPage`의 시험 모드 EntryCard 활성화 → `/:examSlug/exam` 링크
+  - [x] 응시 UI 컴포넌트/통합 테스트 통과(무피드백·네비·제출 확인·자동제출·resume)
+  - [x] test/typecheck/lint/build 통과
 - **테스트 전략**: vitest + RTL, fake timers로 자동제출, fetch/localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -94,12 +94,12 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T020** — RED: ExamTimer/ExamNavigator/ExamPage 테스트(무피드백, 네비·점프, 수동 제출 확인 모달, 만료 자동제출, resume) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T021** — GREEN: `components/ExamTimer.tsx` (wall-clock·임계 색·aria-live) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T022** — GREEN: `components/ExamNavigator.tsx` (문항 그리드·점프) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T023** — GREEN: `pages/ExamPage.tsx` 진행 화면(타이머+네비+ChoiceList 무피드백+제출 확인 모달+자동제출) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T024** — GREEN: `pages/ExamLandingPage.tsx` 시험 모드 카드 활성화(→ `/:examSlug/exam`) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T025** — 검증: test/typecheck/lint/build 통과 (executor: codex, skill: none)
+- [x] **T020** — RED: ExamTimer/ExamNavigator/ExamPage 테스트(무피드백, 네비·점프, 수동 제출 확인 모달, 만료 자동제출, resume) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T021** — GREEN: `components/ExamTimer.tsx` (wall-clock·임계 색·aria-live) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T022** — GREEN: `components/ExamNavigator.tsx` (문항 그리드·점프) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T023** — GREEN: `pages/ExamPage.tsx` 진행 화면(타이머+네비+ChoiceList 무피드백+제출 확인 모달+자동제출) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T024** — GREEN: `pages/ExamLandingPage.tsx` 시험 모드 카드 활성화(→ `/:examSlug/exam`) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T025** — 검증: test/typecheck/lint/build 통과 (executor: codex, skill: none)
 
 ---
 

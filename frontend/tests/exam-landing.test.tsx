@@ -50,10 +50,8 @@ describe("ExamLandingPage", () => {
     expect(await screen.findByRole("heading", { name: "AWS SAP-C02" })).toBeInTheDocument();
     expect(await screen.findByText("476문항")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /문제 풀이/ })).toBeInTheDocument();
-    expect(screen.getAllByText("준비 중")).toHaveLength(2);
-
-    await user.click(screen.getByRole("button", { name: /시험 모드/ }));
-    expect(screen.queryByRole("heading", { name: "문제 풀이 화면" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /시험 모드/ })).toBeInTheDocument();
+    expect(screen.getAllByText("준비 중")).toHaveLength(1);
 
     await user.click(screen.getByRole("link", { name: /문제 풀이/ }));
     await waitFor(() => expect(screen.getByRole("heading", { name: "문제 풀이 화면" })).toBeInTheDocument());

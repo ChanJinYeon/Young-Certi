@@ -89,7 +89,11 @@ export function ExamLandingPage() {
               이어 풀기 · {currentQuestion}번
             </Link>
           ) : null}
-          <EntryCard title="시험 모드" description="제한 시간과 채점 흐름은 준비 중입니다." disabled />
+          <EntryCard
+            title="시험 모드"
+            description="제한 시간 안에 75문항을 풀고 결과를 확인합니다."
+            to={`/${examSlug}/exam`}
+          />
           <EntryCard title="문제집" description="사용자 지정 문제 묶음은 준비 중입니다." disabled />
         </section>
       </div>

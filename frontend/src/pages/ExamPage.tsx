@@ -1,32 +1,217 @@
+import { useQuery } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { useParams } from "react-router-dom";
 
+import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
+import { ChoiceList } from "../components/ChoiceList";
+import { ExamNavigator } from "../components/ExamNavigator";
+import { ExamTimer } from "../components/ExamTimer";
 import { useExamAttempt } from "../hooks/useExamAttempt";
 import { useLocalSession } from "../hooks/useLocalSession";
+
+const ghostButton =
+  "min-h-11 rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
+const primaryButton =
+  "min-h-11 rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
 
 export function ExamPage() {
   const examSlug = useParams().examSlug ?? "sap-c02";
   const { sessionId } = useLocalSession();
   const examAttempt = useExamAttempt(sessionId, examSlug);
+  const [extraTime, setExtraTime] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [submitOpen, setSubmitOpen] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const submitDialogRef = useRef<HTMLDivElement | null>(null);
+
+  const numbersQuery = useQuery({
+    queryKey: ["question-numbers", examSlug],
+    queryFn: () => fetchQuestionNumbers(examSlug),
+  });
+
+  const attempt = examAttempt.attempt;
+  const currentNumber = attempt?.questionNumbers[currentIndex] ?? attempt?.questionNumbers[0] ?? 1;
+  const questionQuery = useQuery({
+    queryKey: ["exam-question", examSlug, currentNumber],
+    queryFn: () => fetchQuestion(examSlug, currentNumber),
+    enabled: Boolean(attempt && attempt.status === "in-progress"),
+  });
+  const answered = useMemo(() => new Set(Object.keys(attempt?.answers ?? {}).map(Number)), [attempt?.answers]);
+
+  useEffect(() => {
+    if (!attempt || attempt.status !== "in-progress") return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [attempt]);
+
+  const remainingSeconds = useMemo(() => {
+    if (!attempt || attempt.status === "submitted") return 0;
+    const endsAt = new Date(attempt.startedAt).getTime() + attempt.durationMinutes * 60_000;
+    return Math.max(0, Math.ceil((endsAt - now) / 1000));
+  }, [attempt, now]);
+
+  const submitExam = useCallback(async () => {
+    if (!attempt) return;
+    const questions = await Promise.all(attempt.questionNumbers.map((number) => fetchQuestion(examSlug, number)));
+    examAttempt.submit(questions);
+    setSubmitOpen(false);
+  }, [attempt, examAttempt, examSlug]);
+
+  useEffect(() => {
+    if (attempt?.status === "in-progress" && remainingSeconds === 0) {
+      void submitExam();
+    }
+  }, [attempt?.status, remainingSeconds, submitExam]);
+
+  useEffect(() => {
+    if (!submitOpen) return;
+    const buttons = submitDialogRef.current?.querySelectorAll("button");
+    buttons?.[0]?.focus();
+  }, [submitOpen]);
+
+  function trapSubmitDialogFocus(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(submitDialogRef.current?.querySelectorAll<HTMLButtonElement>("button") ?? []);
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (!first || !last) return;
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  if (attempt?.status === "submitted") {
+    return (
+      <main className="min-h-screen bg-zinc-50">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-8 sm:px-6 lg:py-12">
+          <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
+          <h1 className="text-3xl font-semibold text-zinc-950">시험 제출 완료</h1>
+          <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <p className="text-sm text-zinc-500">점수</p>
+            <p className="font-mono text-4xl font-semibold text-zinc-950">{attempt.score?.percent ?? 0}%</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!attempt) {
+    return (
+      <main className="min-h-screen bg-zinc-50">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-8 sm:px-6 lg:py-12">
+          <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
+          <h1 className="text-3xl font-semibold text-zinc-950">시험 모드</h1>
+          <p className="leading-relaxed text-zinc-600">
+            75문항을 무작위로 선택해 제한 시간 안에 풀이합니다. 시험 중에는 정답과 해설을 표시하지 않습니다.
+          </p>
+          <label className="flex min-h-11 items-center gap-3 rounded-md border border-zinc-200 bg-white px-3 text-sm text-zinc-700 shadow-sm">
+            <input
+              type="checkbox"
+              className="h-5 w-5 accent-zinc-900"
+              checked={extraTime}
+              onChange={(event) => setExtraTime(event.currentTarget.checked)}
+            />
+            +30분 추가 시간 사용
+          </label>
+          <button
+            type="button"
+            className={primaryButton}
+            disabled={!numbersQuery.data}
+            onClick={() => numbersQuery.data && examAttempt.start(numbersQuery.data.numbers, { extraTime })}
+          >
+            시험 시작
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  const question = questionQuery.data;
+  const selected = attempt.answers[currentNumber] ?? [];
 
   return (
     <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-8 sm:px-6 lg:py-12">
-        <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
-        <h1 className="text-3xl font-semibold text-zinc-950">시험 모드</h1>
-        <p className="leading-relaxed text-zinc-600">
-          시험 응시 화면은 다음 작업에서 채웁니다. 현재는 시험 attempt 상태 기반을 준비했습니다.
-        </p>
-        <dl className="grid gap-2 rounded-lg border border-zinc-200 bg-white p-4 text-sm shadow-sm">
-          <div className="flex justify-between gap-3">
-            <dt className="text-zinc-500">상태</dt>
-            <dd className="font-medium text-zinc-900">{examAttempt.attempt?.status ?? "시작 전"}</dd>
+      <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-6 sm:px-6">
+        <header className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
+            <h1 className="text-3xl font-semibold text-zinc-950">문제 {currentNumber}</h1>
           </div>
-          <div className="flex justify-between gap-3">
-            <dt className="text-zinc-500">남은 시간</dt>
-            <dd className="font-mono text-zinc-900">{examAttempt.remainingSeconds}초</dd>
-          </div>
-        </dl>
+          <ExamTimer remainingSeconds={remainingSeconds} />
+        </header>
+
+        <ExamNavigator
+          answered={answered}
+          current={currentNumber}
+          numbers={attempt.questionNumbers}
+          onSelect={(number) => setCurrentIndex(Math.max(0, attempt.questionNumbers.indexOf(number)))}
+        />
+
+        {question ? (
+          <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <p className="text-lg leading-relaxed text-zinc-800">{question.text}</p>
+            <ChoiceList
+              choices={question.choices}
+              answerKey={question.answerKey}
+              selected={selected}
+              submitted={false}
+              onChange={(next) => examAttempt.answer(question.number, next)}
+            />
+          </article>
+        ) : (
+          <p className="text-zinc-500">문제를 불러오는 중...</p>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className={ghostButton}
+            disabled={currentIndex <= 0}
+            onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
+          >
+            이전
+          </button>
+          <button
+            type="button"
+            className={ghostButton}
+            disabled={currentIndex >= attempt.questionNumbers.length - 1}
+            onClick={() => setCurrentIndex((index) => Math.min(attempt.questionNumbers.length - 1, index + 1))}
+          >
+            다음
+          </button>
+          <button type="button" className={`${primaryButton} ml-auto`} onClick={() => setSubmitOpen(true)}>
+            시험 제출
+          </button>
+        </div>
       </div>
+
+      {submitOpen ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/40 p-4">
+          <div
+            ref={submitDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="시험 제출 확인"
+            onKeyDown={trapSubmitDialogFocus}
+            className="w-full max-w-md space-y-4 rounded-lg bg-white p-5 shadow-xl"
+          >
+            <h2 className="text-lg font-semibold text-zinc-900">시험을 제출하시겠어요?</h2>
+            <p className="text-sm text-zinc-600">제출 후에는 시험 결과 화면으로 이동합니다.</p>
+            <div className="flex justify-end gap-2">
+              <button type="button" className={ghostButton} onClick={() => setSubmitOpen(false)}>
+                취소
+              </button>
+              <button type="button" className={primaryButton} onClick={() => void submitExam()}>
+                제출하기
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
