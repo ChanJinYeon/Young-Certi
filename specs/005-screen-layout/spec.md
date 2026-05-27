@@ -55,8 +55,9 @@ numbered 1–75, 홈으로 is present at the top-left, 시험 제출 at the top-
 **Acceptance Scenarios**:
 
 1. **Given** an in-progress exam, **When** it renders, **Then** the question list is
-   a left sidebar listing positions **1–75** (the count matches the number of exam
-   questions), with the current position highlighted and answered positions marked.
+   a left sidebar that looks and behaves like the practice screen's side menu (flat
+   scrollable list, click-to-jump, status marker, active highlight), listing positions
+   **1–75** (the count matches the number of exam questions).
 2. **Given** the exam screen, **When** it renders, **Then** 홈으로 is at the
    top-left, 시험 제출 at the top-right, and 이전/다음 at the bottom-right.
 3. **Given** the exam screen, **When** the learner clicks 홈으로, **Then** they go to
@@ -91,7 +92,9 @@ numbered 1–75, 홈으로 is present at the top-left, 시험 제출 at the top-
 
 **Exam screen**
 
-- **FR-005**: The exam screen MUST present the question list as a left sidebar,
+- **FR-005**: The exam screen MUST present the question list as a left sidebar that
+  reuses the **practice screen's side-menu pattern** (the 001 SideMenu: a flat
+  scrollable list, click-to-jump, per-item status marker, active-item highlight),
   numbered by exam position **1 … N** (N = number of exam questions, normally 75),
   with the current position highlighted and answered positions visually marked.
 - **FR-006**: The exam screen MUST add a 홈으로 control at the top-left that
@@ -146,6 +149,9 @@ numbered 1–75, 홈으로 is present at the top-left, 시험 제출 at the top-
   (swap from 003).
 - Exam list numbering 1…N is by exam position (1st…Nth selected question), not by the
   underlying pool number; normally N = 75 (fewer if the pool is smaller).
+- The exam left sidebar reuses the practice screen's side-menu pattern (ideally the
+  shared SideMenu component, generalized for exam-position labels + answered status)
+  for visual and interaction consistency.
 - Frontend-only layout/refactor reusing 001/002/004 components, design tokens, and
   state. No backend/contract/dependency change. Desktop-first with a non-breaking
   mobile baseline, consistent with prior features.
