@@ -67,14 +67,16 @@ describe("ExamLandingPage", () => {
     expect(screen.getByRole("link", { name: /문제 풀이/ })).toBeInTheDocument();
   });
 
-  it("shows resume when a saved current question exists", async () => {
+  it("does not render a separate resume link when a saved current question exists", async () => {
     localStorage.setItem("young-certi/sessionId", "session-1");
     localStorage.setItem("young-certi/v1/session-1/current", JSON.stringify({ "sap-c02": 42 }));
     stubQuestionNumbers();
 
     renderLanding();
 
-    expect(await screen.findByRole("link", { name: /이어 풀기.*42번/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "AWS SAP-C02" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /이어 풀기/ })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /문제 풀이/ })).toBeInTheDocument();
   });
 
   it("renders not found for unknown exams with a home link", async () => {

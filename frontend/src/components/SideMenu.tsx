@@ -3,29 +3,48 @@ import { useState } from "react";
 
 import type { Correctness } from "../hooks/usePerQuestionResult";
 
+type MenuStatus = Correctness | "answered";
+
 type Props = {
   numbers: number[];
   current: number;
-  statuses: Record<number, Correctness>;
-  favorites: Set<string>;
-  examSlug: string;
+  statuses: Record<number, MenuStatus | null | undefined>;
+  favorites?: Set<string>;
+  examSlug?: string;
+  navLabel?: string;
+  mobileLabel?: string;
+  getHref?: (number: number) => string;
+  getLabel?: (number: number) => string;
+  getAriaLabel?: (number: number, active: boolean, status: MenuStatus | null | undefined) => string;
   onSelect: (number: number) => void;
 };
 
-function dotClass(status: Correctness | undefined): string {
+function dotClass(status: MenuStatus | null | undefined): string {
   // 600 shades clear the 3:1 non-text contrast bar against white (a11y).
-  if (status === "correct") return "bg-emerald-600";
+  if (status === "correct" || status === "answered") return "bg-emerald-600";
   if (status === "incorrect" || status === "partial") return "bg-rose-600";
   return "bg-zinc-300";
 }
 
-export function SideMenu({ numbers, current, statuses, favorites, examSlug, onSelect }: Props) {
+export function SideMenu({
+  numbers,
+  current,
+  statuses,
+  favorites = new Set(),
+  examSlug = "",
+  navLabel = "문제 목록",
+  mobileLabel = navLabel,
+  getHref = (number) => `/${examSlug}/practice/${number}`,
+  getLabel = (number) => String(number),
+  getAriaLabel = (number) => `문제 ${number}`,
+  onSelect,
+}: Props) {
   const [open, setOpen] = useState(false);
   const answeredCount = numbers.filter((n) => statuses[n]).length;
 
   return (
     <nav
-      aria-label="문제 목록"
+      aria-label={navLabel}
       className="border-b border-zinc-200 bg-white lg:w-60 lg:shrink-0 lg:border-r lg:border-b-0"
     >
       <button
@@ -34,7 +53,7 @@ export function SideMenu({ numbers, current, statuses, favorites, examSlug, onSe
         onClick={() => setOpen((value) => !value)}
         className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium text-zinc-700 lg:hidden"
       >
-        <span>문제 목록</span>
+        <span>{mobileLabel}</span>
         <span className="font-mono text-xs text-zinc-500">
           {answeredCount}/{numbers.length}
         </span>
@@ -45,12 +64,13 @@ export function SideMenu({ numbers, current, statuses, favorites, examSlug, onSe
       >
         {numbers.map((number) => {
           const active = number === current;
+          const status = statuses[number];
           const favorite = favorites.has(`${examSlug}:${number}`);
           return (
             <li key={number}>
               <a
-                href={`/${examSlug}/practice/${number}`}
-                aria-label={`문제 ${number}`}
+                href={getHref(number)}
+                aria-label={getAriaLabel(number, active, status)}
                 aria-current={active ? "page" : undefined}
                 onClick={(event) => {
                   if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
@@ -65,9 +85,9 @@ export function SideMenu({ numbers, current, statuses, favorites, examSlug, onSe
               >
                 <span
                   aria-hidden
-                  className={`h-2 w-2 shrink-0 rounded-full ${dotClass(statuses[number])}`}
+                  className={`h-2 w-2 shrink-0 rounded-full ${dotClass(status)}`}
                 />
-                <span className="font-mono">{number}</span>
+                <span className="font-mono">{getLabel(number)}</span>
                 {favorite ? (
                   <span aria-label={`즐겨찾기 ${number}`} className="ml-auto inline-flex text-amber-400">
                     <Star aria-hidden size={13} fill="currentColor" strokeWidth={0} />

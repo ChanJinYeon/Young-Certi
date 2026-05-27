@@ -3,8 +3,6 @@ import { Link, useParams } from "react-router-dom";
 
 import { fetchQuestionNumbers } from "../api/client";
 import { EntryCard } from "../components/EntryCard";
-import { storageKey } from "../hooks/storage";
-import { useLocalSession } from "../hooks/useLocalSession";
 
 const knownExams = {
   "sap-c02": {
@@ -13,23 +11,9 @@ const knownExams = {
   },
 } as const;
 
-function readCurrentQuestion(sessionId: string, examSlug: string): number | null {
-  const raw = localStorage.getItem(storageKey(sessionId, "current"));
-  if (!raw) return null;
-  try {
-    const parsed = JSON.parse(raw) as Record<string, unknown>;
-    const value = parsed[examSlug];
-    return typeof value === "number" && Number.isFinite(value) ? value : null;
-  } catch {
-    return null;
-  }
-}
-
 export function ExamLandingPage() {
   const examSlug = useParams().examSlug ?? "sap-c02";
   const exam = knownExams[examSlug as keyof typeof knownExams];
-  const { sessionId } = useLocalSession();
-  const currentQuestion = exam ? readCurrentQuestion(sessionId, examSlug) : null;
   const questionNumbersQuery = useQuery({
     queryKey: ["question-numbers", examSlug],
     queryFn: () => fetchQuestionNumbers(examSlug),
@@ -81,14 +65,6 @@ export function ExamLandingPage() {
             description="저장된 진행 상태를 유지하며 문제를 풉니다."
             to={`/${examSlug}/practice`}
           />
-          {currentQuestion ? (
-            <Link
-              to={`/${examSlug}/practice`}
-              className="inline-flex min-h-11 w-fit items-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-medium text-zinc-700 shadow-sm transition-colors hover:bg-zinc-50"
-            >
-              이어 풀기 · {currentQuestion}번
-            </Link>
-          ) : null}
           <EntryCard
             title="시험 모드"
             description="제한 시간 안에 75문항을 풀고 결과를 확인합니다."

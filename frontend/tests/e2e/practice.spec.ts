@@ -97,7 +97,7 @@ test("reload restores the current question from localStorage", async ({ page }) 
   await expect(page.getByRole("heading", { name: "문제 20" })).toBeVisible();
 });
 
-test("landing resumes the last viewed question", async ({ page }) => {
+test("landing relies on the practice entry to resume the last viewed question", async ({ page }) => {
   await page.goto("/sap-c02/practice");
   await expect(page.getByRole("heading", { name: "문제 1" })).toBeVisible();
 
@@ -105,8 +105,8 @@ test("landing resumes the last viewed question", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "문제 2" })).toBeVisible();
 
   await page.goto("/sap-c02/");
-  await expect(page.getByRole("link", { name: /이어 풀기.*2번/ })).toBeVisible();
-  await page.getByRole("link", { name: /이어 풀기.*2번/ }).click();
+  await expect(page.getByRole("link", { name: /이어 풀기/ })).not.toBeVisible();
+  await page.getByRole("link", { name: /문제 풀이/ }).click();
   await expect(page.getByRole("heading", { name: "문제 2" })).toBeVisible();
 });
 

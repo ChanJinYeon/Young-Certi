@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
-import { ExamNavigator } from "../components/ExamNavigator";
 import { ExamResult } from "../components/ExamResult";
 import { ExamTimer } from "../components/ExamTimer";
+import { SideMenu } from "../components/SideMenu";
 import { useExamAttempt } from "../hooks/useExamAttempt";
 import { useLocalSession } from "../hooks/useLocalSession";
 
@@ -42,7 +42,17 @@ export function ExamPage() {
     queryFn: () => Promise.all((attempt?.questionNumbers ?? []).map((number) => fetchQuestion(examSlug, number))),
     enabled: Boolean(attempt && attempt.status === "submitted"),
   });
-  const answered = useMemo(() => new Set(Object.keys(attempt?.answers ?? {}).map(Number)), [attempt?.answers]);
+  const examPositions = useMemo(
+    () => attempt?.questionNumbers.map((_, index) => index + 1) ?? [],
+    [attempt?.questionNumbers],
+  );
+  const positionStatuses = useMemo<Record<number, "answered" | null>>(() => {
+    const map: Record<number, "answered" | null> = {};
+    attempt?.questionNumbers.forEach((number, index) => {
+      map[index + 1] = attempt.answers[number]?.length ? "answered" : null;
+    });
+    return map;
+  }, [attempt?.answers, attempt?.questionNumbers]);
 
   useEffect(() => {
     if (!attempt || attempt.status !== "in-progress") return;
@@ -143,58 +153,79 @@ export function ExamPage() {
   const selected = attempt.answers[currentNumber] ?? [];
 
   return (
-    <main className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-6 sm:px-6">
-        <header className="flex flex-wrap items-center justify-between gap-3">
-          <div>
-            <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
-            <h1 className="text-3xl font-semibold text-zinc-950">문제 {currentNumber}</h1>
+    <main className="flex min-h-screen flex-col bg-zinc-50 lg:flex-row">
+      <SideMenu
+        numbers={examPositions}
+        current={currentIndex + 1}
+        statuses={positionStatuses}
+        navLabel="시험 위치 목록"
+        mobileLabel="시험 위치 목록"
+        getHref={(position) => `/${examSlug}/exam#${position}`}
+        getAriaLabel={(position, active, status) =>
+          `시험 위치 ${position}${active ? " 현재" : ""}${status ? " 응답됨" : " 미응답"}`
+        }
+        onSelect={(position) => setCurrentIndex(Math.max(0, position - 1))}
+      />
+      <div className="flex-1">
+        <div className="mx-auto flex w-full max-w-4xl flex-col gap-5 px-4 py-6 sm:px-6">
+          <header className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
+              <h1 className="text-3xl font-semibold text-zinc-950">문제 {currentNumber}</h1>
+            </div>
+            <ExamTimer remainingSeconds={remainingSeconds} />
+          </header>
+
+          <div
+            role="group"
+            aria-label="시험 상단 컨트롤"
+            className="flex flex-wrap items-center justify-between gap-2"
+          >
+            <Link to="/" className={ghostButton}>
+              홈으로
+            </Link>
+            <button type="button" className={primaryButton} onClick={() => setSubmitOpen(true)}>
+              시험 제출
+            </button>
           </div>
-          <ExamTimer remainingSeconds={remainingSeconds} />
-        </header>
 
-        <ExamNavigator
-          answered={answered}
-          current={currentNumber}
-          numbers={attempt.questionNumbers}
-          onSelect={(number) => setCurrentIndex(Math.max(0, attempt.questionNumbers.indexOf(number)))}
-        />
+          {question ? (
+            <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+              <p className="text-lg leading-relaxed text-zinc-800">{question.text}</p>
+              <ChoiceList
+                choices={question.choices}
+                answerKey={question.answerKey}
+                selected={selected}
+                submitted={false}
+                onChange={(next) => examAttempt.answer(question.number, next)}
+              />
+            </article>
+          ) : (
+            <p className="text-zinc-500">문제를 불러오는 중...</p>
+          )}
 
-        {question ? (
-          <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-            <p className="text-lg leading-relaxed text-zinc-800">{question.text}</p>
-            <ChoiceList
-              choices={question.choices}
-              answerKey={question.answerKey}
-              selected={selected}
-              submitted={false}
-              onChange={(next) => examAttempt.answer(question.number, next)}
-            />
-          </article>
-        ) : (
-          <p className="text-zinc-500">문제를 불러오는 중...</p>
-        )}
-
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            className={ghostButton}
-            disabled={currentIndex <= 0}
-            onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
+          <div
+            role="group"
+            aria-label="시험 하단 컨트롤"
+            className="flex flex-wrap items-center justify-end gap-2"
           >
-            이전
-          </button>
-          <button
-            type="button"
-            className={ghostButton}
-            disabled={currentIndex >= attempt.questionNumbers.length - 1}
-            onClick={() => setCurrentIndex((index) => Math.min(attempt.questionNumbers.length - 1, index + 1))}
-          >
-            다음
-          </button>
-          <button type="button" className={`${primaryButton} ml-auto`} onClick={() => setSubmitOpen(true)}>
-            시험 제출
-          </button>
+            <button
+              type="button"
+              className={ghostButton}
+              disabled={currentIndex <= 0}
+              onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
+            >
+              이전
+            </button>
+            <button
+              type="button"
+              className={ghostButton}
+              disabled={currentIndex >= attempt.questionNumbers.length - 1}
+              onClick={() => setCurrentIndex((index) => Math.min(attempt.questionNumbers.length - 1, index + 1))}
+            >
+              다음
+            </button>
+          </div>
         </div>
       </div>
 

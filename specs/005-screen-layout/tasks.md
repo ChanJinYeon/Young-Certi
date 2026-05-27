@@ -34,7 +34,7 @@
 
 ---
 
-## [ ] M01 — 컨트롤 코너 배치 + exam 좌측 리스트 + 랜딩 정리
+## [x] M01 — 컨트롤 코너 배치 + exam 좌측 리스트 + 랜딩 정리
 
 - **목적 (Purpose)**: practice·exam 컨트롤을 문제 위/아래 행으로 재배치하고, exam 네비를 좌측 SideMenu(1~N)로 바꾸고 홈으로 추가, 랜딩의 이어 풀기를 제거한다. (동작 무변경)
 - **명세 참조**: spec.md FR-001~012/US1·US2, plan.md §Eng·§Design Review, research.md D-001~005
@@ -42,12 +42,12 @@
 - **Skill routing**:
   - `vercel-react-best-practices` — 컴포넌트 일반화·레이아웃 (Vite SPA, 의도만)
 - **완료 정의 (DoD)**:
-  - [ ] `SideMenu` 일반화: 라벨(문제번호/exam 위치 1~N)·상태맵(정오/응답여부)·즐겨찾기 옵셔널 — practice·exam 공용
-  - [ ] `PracticePage`: 문제 위 행(좌 홈으로 / 우 제출·다시 풀기), 아래 행(좌 문제집에 추가 / 우 이전·다음). 즐겨찾기는 카드 헤더 유지
-  - [ ] `ExamPage`: 좌측 SideMenu(1~N), 위 행(좌 홈으로 / 우 시험 제출), 아래 행(우 이전·다음). top `ExamNavigator` 은퇴. 홈으로는 `/`로(시험 attempt 보존)
-  - [ ] `ExamLandingPage`: 이어 풀기 Link 제거
-  - [ ] 기존 테스트(practice-page·exam-page·exam-landing) 위치/마크업에 맞춰 갱신, 동작 단언 유지
-  - [ ] test/typecheck/lint/build 통과 + 001~004 무회귀
+  - [x] `SideMenu` 일반화: 라벨(문제번호/exam 위치 1~N)·상태맵(정오/응답여부)·즐겨찾기 옵셔널 — practice·exam 공용
+  - [x] `PracticePage`: 문제 위 행(좌 홈으로 / 우 제출·다시 풀기), 아래 행(좌 문제집에 추가 / 우 이전·다음). 즐겨찾기는 카드 헤더 유지
+  - [x] `ExamPage`: 좌측 SideMenu(1~N), 위 행(좌 홈으로 / 우 시험 제출), 아래 행(우 이전·다음). top `ExamNavigator` 은퇴. 홈으로는 `/`로(시험 attempt 보존)
+  - [x] `ExamLandingPage`: 이어 풀기 Link 제거
+  - [x] 기존 테스트(practice-page·exam-page·exam-landing) 위치/마크업에 맞춰 갱신, 동작 단언 유지
+  - [x] test/typecheck/lint/build 통과 + 001~004 무회귀
 - **테스트 전략**: vitest + RTL. 컨트롤 위치·여전히 동작, exam 좌측 1~N·점프·홈으로 보존, 랜딩 이어풀기 부재. fetch/localStorage stub.
 - **검증 명령 (컨테이너 기반)**:
   - `docker compose run --rm web pnpm test`
@@ -58,12 +58,12 @@
 
 ### 하위 작업 (Subtasks, 구현 순서대로)
 
-- [ ] **T010** — RED: 테스트 갱신 — practice 컨트롤 위치·동작, exam 좌측 SideMenu(1~N)·점프·홈으로 attempt 보존, 랜딩 이어풀기 제거 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T011** — GREEN: `components/SideMenu.tsx` 일반화(라벨·상태맵·옵셔널 즐겨찾기) (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T012** — GREEN: `pages/PracticePage.tsx` 위/아래 컨트롤 행 재배치 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T013** — GREEN: `pages/ExamPage.tsx` 좌측 SideMenu(1~N) + 코너 컨트롤 + 홈으로, `ExamNavigator` 은퇴 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T014** — GREEN: `pages/ExamLandingPage.tsx` 이어 풀기 제거 (executor: codex, skill: `vercel-react-best-practices`)
-- [ ] **T015** — 검증: test/typecheck/lint/build 통과, 001~004 무회귀 (executor: codex, skill: none)
+- [x] **T010** — RED: 테스트 갱신 — practice 컨트롤 위치·동작, exam 좌측 SideMenu(1~N)·점프·홈으로 attempt 보존, 랜딩 이어풀기 제거 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T011** — GREEN: `components/SideMenu.tsx` 일반화(라벨·상태맵·옵셔널 즐겨찾기) (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T012** — GREEN: `pages/PracticePage.tsx` 위/아래 컨트롤 행 재배치 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T013** — GREEN: `pages/ExamPage.tsx` 좌측 SideMenu(1~N) + 코너 컨트롤 + 홈으로, `ExamNavigator` 은퇴 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T014** — GREEN: `pages/ExamLandingPage.tsx` 이어 풀기 제거 (executor: codex, skill: `vercel-react-best-practices`)
+- [x] **T015** — 검증: test/typecheck/lint/build 통과, 001~004 무회귀 (executor: codex, skill: none)
 
 ---
 

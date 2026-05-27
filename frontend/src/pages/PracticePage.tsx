@@ -157,6 +157,25 @@ export function PracticePage() {
             </p>
           ) : null}
 
+          <div
+            role="group"
+            aria-label="문제 상단 컨트롤"
+            className="flex flex-wrap items-center justify-between gap-2"
+          >
+            <Link to="/" className={ghostButton}>
+              홈으로
+            </Link>
+            {submitted ? (
+              <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
+                다시 풀기
+              </button>
+            ) : (
+              <button type="button" onClick={submit} className={primaryButton}>
+                제출
+              </button>
+            )}
+          </div>
+
           <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <header className="flex items-center justify-between gap-3">
               <h1 className="text-2xl font-semibold text-zinc-900">
@@ -178,23 +197,15 @@ export function PracticePage() {
             {submitError ? <p className="text-sm text-rose-700">{submitError}</p> : null}
           </article>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <Link to="/" className={ghostButton}>
-              홈으로
-            </Link>
-            {submitted ? (
-              <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
-                다시 풀기
-              </button>
-            ) : (
-              <button type="button" onClick={submit} className={primaryButton}>
-                제출
-              </button>
-            )}
+          <div
+            role="group"
+            aria-label="문제 하단 컨트롤"
+            className="flex flex-wrap items-center justify-between gap-2"
+          >
             <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
               문제집에 추가
             </button>
-            <div className="ml-auto flex gap-2">
+            <div className="flex gap-2">
               <button
                 type="button"
                 disabled={index <= 0}
