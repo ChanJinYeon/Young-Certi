@@ -1,12 +1,22 @@
 crawler/build/
 crawler/build.*/
 
+.DS_Store
+**/.DS_Store
+
 **/.terraform/
 *.tfplan
+tfplan
 *.tfstate
 *.tfstate.*
+*.tfvars
+!*.tfvars.example
 crash.log
 crash.*.log
+
+.env
+.env.*
+!.env.example
 
 node_modules/
 .pnpm-store/
@@ -16,3 +26,13 @@ frontend/coverage/
 frontend/playwright-report/
 frontend/test-results/
 .gstack/
+
+.claude/
+.specify/
+AGENTS.md
+CLAUDE.md
+specs/**
+!specs/
+!specs/001-question-practice/
+!specs/001-question-practice/contracts/
+!specs/001-question-practice/contracts/openapi.yaml
