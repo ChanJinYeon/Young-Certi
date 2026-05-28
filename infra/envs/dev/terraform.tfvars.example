@@ -1,0 +1,4 @@
+question_data_bucket_name = "young-certi-question-data-dev-example"
+frontend_bucket_name      = "young-certi-frontend-dev-example"
+github_repository         = "OWNER/REPO"
+github_branch             = "main"

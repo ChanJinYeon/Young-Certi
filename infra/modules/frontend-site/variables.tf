@@ -1,16 +1,16 @@
 variable "bucket_name" {
-  description = "Globally unique S3 bucket name."
+  description = "Globally unique S3 bucket name for frontend static assets."
   type        = string
 }
 
-variable "force_destroy" {
-  description = "Whether Terraform can delete the bucket even when it contains objects."
-  type        = bool
-  default     = false
+variable "price_class" {
+  description = "CloudFront price class."
+  type        = string
+  default     = "PriceClass_200"
 }
 
 variable "tags" {
-  description = "Tags to apply to the bucket."
+  description = "Tags to apply to frontend resources."
   type        = map(string)
   default     = {}
 }

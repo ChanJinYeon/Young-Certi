@@ -1,39 +1,31 @@
-variable "enabled" {
-  description = "Whether to create the GitHub OIDC provider and role."
-  type        = bool
-  default     = true
+variable "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID that GitHub Actions can invalidate."
+  type        = string
 }
 
-variable "role_name" {
-  description = "IAM role name assumed by GitHub Actions."
+variable "frontend_bucket_name" {
+  description = "Frontend S3 bucket name that GitHub Actions can deploy to."
   type        = string
+}
+
+variable "github_branch" {
+  description = "GitHub branch allowed to assume this role."
+  type        = string
+  default     = "main"
 }
 
 variable "github_repository" {
-  description = "GitHub repository allowed to assume the role, in owner/name form."
+  description = "GitHub repository in OWNER/REPO format."
   type        = string
 }
 
-variable "allowed_refs" {
-  description = "Git refs allowed to assume the role."
-  type        = list(string)
-  default     = ["refs/heads/main"]
-}
-
-variable "policy_arns" {
-  description = "Managed policy ARNs to attach to the role."
-  type        = list(string)
-  default     = []
-}
-
-variable "inline_policy_json" {
-  description = "Optional inline policy JSON for the role."
+variable "role_name" {
+  description = "IAM role name for GitHub Actions."
   type        = string
-  default     = null
 }
 
 variable "tags" {
-  description = "Tags to apply to resources."
+  description = "Tags to apply to IAM resources."
   type        = map(string)
   default     = {}
 }
