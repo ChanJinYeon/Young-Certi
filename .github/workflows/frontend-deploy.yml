@@ -1,0 +1,71 @@
+name: frontend-deploy   # workflow 이름
+
+on:
+  push:
+    branches:
+      - main    # main 브랜치에 push가 발생할 때
+    paths:
+      - "frontend/**"   # frontend 코드나 workflow 파일이 바뀔 때 실행
+      - ".github/workflows/frontend-deploy.yml"
+
+  workflow_dispatch:    # GitHub Actions 화면에서 수동으로 실행할 수 있도록 함
+
+permissions:
+  contents: read    # Repository 코드를 읽는 권한
+  id-token: write   # OIDC token 발급 받고 Role을 assume할 수 있도록 하는 권한
+
+jobs:
+  deploy:       # deploy라는 job 정의
+    name: Build and deploy frontend # 표시되는 이름
+    runs-on: ubuntu-latest  # GitHub가 제공하는 Ubuntu runner에서 실행
+
+    defaults:     # working directory 설정
+      run:        # frontend/package.json이 frontend/ 안에 있기 때문에 frontend로 설정
+        working-directory: frontend
+
+    steps:
+    # 저장소 코드를 runner로 내려 받음
+      - name: Checkout
+        uses: actions/checkout@v4
+
+    # pnpm 설치
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.0  # frontend/package.json에 packageManage와 동일한 버전으로 맞추기
+
+    # Node.js 설치
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm   # pnpm store를 캐시해서 다음 workflow 실행 속도 높임
+          cache-dependency-path: frontend/pnpm-lock.yaml    # 해당 lock 파일이 바뀌면 새로 캐시
+
+    # frontend 의존성 설치
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+    # Vite frontend 빌드
+      - name: Build
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+        run: pnpm build
+
+    # AWS 인증 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+    # 빌드 결과물을 S3 frontend bucket으로 업로드
+      - name: Sync to S3
+        run: aws s3 sync dist/ s3://${{ vars.FRONTEND_BUCKET_NAME }} --delete
+
+    # CloudFront 캐시 무효화 (새 index.html)
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"
