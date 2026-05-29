@@ -25,20 +25,3 @@ module "frontend_site" {
     ManagedBy   = "terraform"
   }
 }
-
-module "github_oidc" {
-  source = "../../modules/github-oidc"
-
-  cloudfront_distribution_id = module.frontend_site.cloudfront_distribution_id
-  frontend_bucket_name       = module.frontend_site.bucket_name
-  github_branch              = var.github_branch
-  github_repository          = var.github_repository
-  role_name                  = "young-certi-dev-github-actions"
-
-  tags = {
-    Project     = "young-certi"
-    Environment = "dev"
-    Purpose     = "github-actions-oidc"
-    ManagedBy   = "terraform"
-  }
-}

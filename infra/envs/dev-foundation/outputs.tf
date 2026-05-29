@@ -23,7 +23,7 @@ output "frontend_cloudfront_domain_name" {
   value       = module.frontend_site.cloudfront_domain_name
 }
 
-output "github_actions_role_arn" {
-  description = "ARN of the GitHub Actions deploy role."
-  value       = module.github_oidc.role_arn
+output "github_frontend_deploy_role_arn" {
+  description = "ARN of the GitHub Actions frontend deploy role."
+  value       = module.github_frontend_deploy_role.role_arn
 }
