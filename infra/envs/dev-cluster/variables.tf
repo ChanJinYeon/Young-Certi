@@ -15,3 +15,9 @@ variable "environment" {
   type        = string
   default     = "dev"
 }
+
+variable "question_data_bucket_name" {
+  description = "Name of the S3 bucket that stores question data for the backend API."
+  type        = string
+  default     = "young-certi-study"
+}

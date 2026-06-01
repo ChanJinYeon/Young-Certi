@@ -28,3 +28,11 @@ output "eks_cluster_endpoint" {
   description = "Endpoint for the EKS cluster API server."
   value       = module.eks.cluster_endpoint
 }
+
+################################################################
+# IAM
+################################################################
+output "backend_api_role_arn" {
+  description = "ARN of the IAM role associated with the backend API Kubernetes ServiceAccount."
+  value       = aws_iam_role.backend_api.arn
+}
