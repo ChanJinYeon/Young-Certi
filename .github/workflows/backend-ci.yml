@@ -38,9 +38,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
-    # pytest 실행 (테스트 실패 시 중단)
+      # pytest 실행 (테스트 실패 시 중단)
       - name: Run backend tests
         working-directory: backend
+        env:
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_REGION: ap-northeast-2
+          S3_BUCKET: test-bucket
+          S3_QUESTIONS_KEY: test/questions.json
         run: pytest
 
     # AWS 인증
