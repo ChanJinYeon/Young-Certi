@@ -1,0 +1,17 @@
+  apiVersion: kustomize.config.k8s.io/v1beta1
+  kind: Kustomization
+  resources:
+    - namespace.yaml
+    - serviceaccount.yaml
+    - configmap.yaml
+    - deployment.yaml
+    - service.yaml
+  images:
+    - name: young-certi-backend
+      # ECR Repository URL
+      newName: 474668399282.dkr.ecr.ap-northeast-2.amazonaws.com/young-certi-backend
+      # ECR에 push된 이미지 태그
+      newTag: ca81fb33450591e20969bac8387f55e9ac12a947
+
+      # 기댓값: deployment에서
+      # image: 474668399282.dkr.ecr.ap-northeast-2.amazonaws.com/young-certi-backend:ca81fb33450591e20969bac8387f55e9ac12a947

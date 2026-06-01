@@ -1,0 +1,17 @@
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: young-certi-api
+    namespace: young-certi
+    labels:
+      app.kubernetes.io/name: young-certi-api
+      app.kubernetes.io/part-of: young-certi
+
+  spec:
+    type: ClusterIP
+    selector:
+      app.kubernetes.io/name: young-certi-api
+    ports:
+      - name: http
+        port: 80
+        targetPort: http  # deployment.yaml에서 containerPort 이름을 http로 지정 -> 숫자 8000 대신 이름 http를 사용 가능
