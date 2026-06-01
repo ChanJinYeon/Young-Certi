@@ -88,7 +88,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     default = {
-      ami_type = "AL2023_x86_64_STANDARD" # EKS 1.30부터 AL2023 계열이 기본 방향입니다.
+      ami_type = "AL2023_x86_64_STANDARD" # EKS 1.30부터 AL2023 계열이 기본 방향
 
       instance_types = ["t3.medium"]
 
