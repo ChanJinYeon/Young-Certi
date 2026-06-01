@@ -1,0 +1,70 @@
+name: backend-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - "specs/001-question-practice/contracts/openapi.yaml"
+      - ".github/workflows/backend-ci.yml"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read    # repo 코드를 읽을 수 있게
+  id-token: write   # GitHub OIDC 토큰을 발급받아 AWS IAM Role을 assume하기 위해
+
+jobs:
+  test-build-push:
+    name: Test, build, and push backend image
+    runs-on: ubuntu-latest
+
+    steps:
+    # repo 코드 받기
+      - name: Checkout
+        uses: actions/checkout@v5
+
+    # python 설치
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+    # 의존성 설치
+      - name: Install backend dependencies
+        working-directory: backend
+        run: |  # pyproject.toml의 [dev] optional dependencies 설치
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+    # pytest 실행 (테스트 실패 시 중단)
+      - name: Run backend tests
+        working-directory: backend
+        run: pytest
+
+    # AWS 인증
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.BACKEND_AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+    # ECR 로그인 (임시 AWS credentials)
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+    # 이미지 빌드 (태그로 관리)
+    # build context는 repo root이므로 -f backend/Dockerfile 지정 필수
+    # {{ github.sha }}: commit-sha
+      - name: Build image
+        run: |
+          docker build \
+            -f backend/Dockerfile \
+            -t "${{ vars.BACKEND_ECR_REPOSITORY_URL }}:${{ github.sha }}" \
+            .
+
+    # ECR에 push
+      - name: Push image
+        run: |
+          docker push "${{ vars.BACKEND_ECR_REPOSITORY_URL }}:${{ github.sha }}"

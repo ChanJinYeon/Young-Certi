@@ -26,7 +26,7 @@ jobs:
     steps:
     # 저장소 코드를 runner로 내려 받음
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
     # pnpm 설치
       - name: Setup pnpm
@@ -36,7 +36,7 @@ jobs:
 
     # Node.js 설치
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: pnpm   # pnpm store를 캐시해서 다음 workflow 실행 속도 높임
