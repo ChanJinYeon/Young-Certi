@@ -24,3 +24,9 @@ variable "github_repository" {
   description = "GitHub repository in OWNER/REPO format."
   type        = string
 }
+
+variable "backend_ecr_repository_name" {
+  description = "Name of the backend ECR repository."
+  type        = string
+  default     = "young-certi-backend"
+}

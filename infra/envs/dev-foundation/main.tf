@@ -25,3 +25,32 @@ module "frontend_site" {
     ManagedBy   = "terraform"
   }
 }
+
+module "backend_ecr" {
+  source = "../../modules/ecr-repository"
+
+  repository_name      = var.backend_ecr_repository_name
+  image_tag_mutability = "IMMUTABLE"
+  force_delete         = true
+
+  tags = {
+    Project     = "young-certi"
+    Environment = "dev"
+    Purpose     = "backend-image"
+    ManagedBy   = "terraform"
+  }
+}
+
+# Registry 단위 스캔
+resource "aws_ecr_registry_scanning_configuration" "main" {
+  scan_type = "BASIC"
+
+  rule {
+    scan_frequency = "SCAN_ON_PUSH"
+
+    repository_filter {
+      filter      = "young-certi-*"
+      filter_type = "WILDCARD"
+    }
+  }
+}
