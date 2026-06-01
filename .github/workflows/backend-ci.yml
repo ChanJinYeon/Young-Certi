@@ -38,6 +38,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
 
+      # backend 코드는 Docker 실행 환경 기준으로 /workspace/specs/... 경로의 OpenAPI 계약 파일을 읽음
+      # GitHub Actions runner의 checkout 경로는 /home/runner/work/... 이므로 테스트 전에 같은 경로를 만들어줌
+      - name: Prepare OpenAPI contract path
+        run: |
+          sudo mkdir -p /workspace/specs/001-question-practice/contracts
+          sudo cp specs/001-question-practice/contracts/openapi.yaml \
+            /workspace/specs/001-question-practice/contracts/openapi.yaml
+
       # pytest 실행 (테스트 실패 시 중단)
       - name: Run backend tests
         working-directory: backend
