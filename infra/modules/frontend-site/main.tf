@@ -86,7 +86,9 @@ resource "aws_cloudfront_distribution" "main" {
     }
   }
 
-  # CloudFront - Domain 연결
+  # CloudFront - Domain 연결 (정보만 제공)
+  # DNS 입장에서는 해당 정보를 모르기 때문에 infra/envs/dev-foundation/dns.tf 작성
+  # route53에 레코드 만드는 것 (Alias)
   aliases = [
     var.domain_name
   ]

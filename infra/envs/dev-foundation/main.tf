@@ -18,6 +18,7 @@ module "frontend_site" {
 
   bucket_name = var.frontend_bucket_name
 
+  # module에서 추가 확인하기
   domain_name         = var.frontend_domain_name
   acm_certificate_arn = var.frontend_acm_certificate_arn
 
