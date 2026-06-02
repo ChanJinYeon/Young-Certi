@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: young-certi-api
+  namespace: young-certi
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing # 외부 인터넷에서 접근 가능한 ALB 생성 (다른 옵션: internal)
+    alb.ingress.kubernetes.io/target-type: ip # ALB Target Group이 Pod IP를 직접 대상으로 삼음 (다른 옵션: instance)
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz  # ALB health check 경로
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: young-certi-api
+                port:
+                  number: 80

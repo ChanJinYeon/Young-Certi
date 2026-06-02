@@ -6,6 +6,7 @@
     - configmap.yaml
     - deployment.yaml
     - service.yaml
+    - ingress.yaml
   images:
     - name: young-certi-backend
       # ECR Repository URL
