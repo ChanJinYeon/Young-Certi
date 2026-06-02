@@ -10,4 +10,4 @@ resources:
 images:
 - name: young-certi-backend
   newName: 474668399282.dkr.ecr.ap-northeast-2.amazonaws.com/young-certi-backend
-  newTag: f439906b520313ac78d5885b5a7858a8ed93a33e
+  newTag: d65ed18fcc9a61a34e4040a0e499d66ab065eae1
