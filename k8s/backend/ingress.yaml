@@ -22,7 +22,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-    - host: api.certi.adansonia.cloud
+    - host: api.certi.adansonia.cloud # host 추가 -> service로 트래픽 라우팅
       http:
         paths:
           - path: /
