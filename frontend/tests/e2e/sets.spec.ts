@@ -62,3 +62,36 @@ test("opens a saved set from landing and solves it with set-scoped feedback", as
     }),
   );
 });
+
+test("creates an empty set from sets, adds a practice question, and toggles set sort", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: /AWS SAP-C02/ }).click();
+  await page.getByRole("link", { name: /시험 모드/ }).click();
+
+  await expect(page).toHaveURL(/\/sap-c02\/exam$/);
+  await page.getByRole("link", { name: "홈으로" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { name: "YoungCerti" })).toBeVisible();
+
+  await page.getByRole("link", { name: /AWS SAP-C02/ }).click();
+  await page.getByRole("link", { name: /문제집/ }).click();
+  await page.getByRole("button", { name: "문제집 추가" }).click();
+  await page.getByLabel("문제집 이름").fill("Review");
+  await page.getByRole("button", { name: "확인" }).click();
+
+  await expect(page.getByRole("article", { name: "Review 문제집" })).toContainText("0문항");
+
+  await page.goto("/sap-c02/practice");
+  await expect(page.getByRole("heading", { name: "문제 1" })).toBeVisible();
+  await page.getByRole("button", { name: "문제집에 추가" }).click();
+  await page.getByRole("button", { name: "Review 0" }).click();
+
+  await page.goto("/sap-c02/sets");
+  await expect(page.getByRole("article", { name: "Review 문제집" })).toContainText("1문항");
+  await page.getByRole("link", { name: "Review 열기" }).click();
+
+  await expect(page).toHaveURL(/\/sap-c02\/sets\//);
+  await expect(page.getByRole("heading", { name: "Review" })).toBeVisible();
+  await page.getByRole("button", { name: "문제 번호 순서" }).click();
+  await expect(page.getByRole("button", { name: "문제 번호 순서" })).toHaveAttribute("aria-pressed", "true");
+});

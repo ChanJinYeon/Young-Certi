@@ -26,7 +26,7 @@ test("starts an exam, answers, submits, and shows a per-question result review",
   await page.getByRole("button", { name: "제출하기" }).click();
 
   await expect(page.getByRole("heading", { name: "시험 결과" })).toBeVisible();
-  await expect(page.getByText(/%$/).first()).toBeVisible();
+  await expect(page.getByText(/%$/).nth(1)).toBeVisible();
   await expect(page.getByText("내 답:").first()).toBeVisible();
   await expect(page.getByText("정답:").first()).toBeVisible();
 });
@@ -102,4 +102,47 @@ test("auto-submits an expired resumed exam and does not mutate practice state", 
   );
   expect(persisted?.current).toEqual({ "sap-c02": 20 });
   expect(persisted?.exam.status).toBe("submitted");
+});
+
+test("creates a wrong-answer set from submitted exam results using real question numbers", async ({ page, request }) => {
+  const firstQuestion = await (await request.get("http://api:8000/exams/sap-c02/questions/10")).json();
+
+  await page.goto("/");
+  await page.evaluate((answerKey) => {
+    window.localStorage.setItem("young-certi/sessionId", "wrong-set-e2e-session");
+    window.localStorage.setItem(
+      "young-certi/v1/wrong-set-e2e-session/exam/sap-c02",
+      JSON.stringify({
+        examSlug: "sap-c02",
+        questionNumbers: [10, 20],
+        answers: { 10: answerKey },
+        startedAt: "2026-05-27T00:00:00.000Z",
+        durationMinutes: 180,
+        status: "submitted",
+        submittedAt: "2026-05-27T01:00:00.000Z",
+        score: { correct: 1, total: 2, percent: 50, pass: false },
+      }),
+    );
+  }, firstQuestion.answerKey);
+
+  await page.goto("/sap-c02/exam");
+  await expect(page.getByRole("heading", { name: "시험 결과" })).toBeVisible();
+  await expect(page.getByRole("article", { name: "문제 1 정답" })).toBeVisible();
+
+  await page.getByRole("button", { name: "틀린 문제 문제집에 추가" }).click();
+  await page.getByLabel("문제집 이름").fill("Wrong review");
+  await page.getByRole("button", { name: "생성" }).click();
+  await expect(page.getByRole("status")).toContainText("Wrong review");
+
+  const sets = await page.evaluate(() => {
+    const sessionId = window.localStorage.getItem("young-certi/sessionId");
+    return JSON.parse(window.localStorage.getItem(`young-certi/v1/${sessionId}/sets`) ?? "[]");
+  });
+
+  expect(sets).toEqual([
+    expect.objectContaining({
+      name: "Wrong review",
+      questionRefs: [{ examSlug: "sap-c02", number: 20 }],
+    }),
+  ]);
 });

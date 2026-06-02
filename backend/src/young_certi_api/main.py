@@ -93,7 +93,7 @@ def create_app(pool: QuestionPool | None = None, load_on_startup: bool = True) -
     app.add_exception_handler(ApiError, cast(Any, api_error_handler))
     app.add_exception_handler(RequestValidationError, cast(Any, validation_error_handler))
     app.add_exception_handler(Exception, unhandled_error_handler)
-    app.openapi = load_contract_openapi  # type: ignore[method-assign] 
+    app.openapi = load_contract_openapi  # type: ignore[method-assign]
     return app
 
 

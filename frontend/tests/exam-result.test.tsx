@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { ExamResult } from "../src/components/ExamResult";
 import type { Question } from "../src/api/types";
-import type { ExamAttempt } from "../src/hooks/useExamAttempt";
+import type { Correctness } from "../src/hooks/usePerQuestionResult";
 
 const questions: Question[] = [
   {
@@ -31,54 +31,51 @@ const questions: Question[] = [
   },
 ];
 
-const attempt: ExamAttempt = {
-  examSlug: "sap-c02",
-  questionNumbers: [1, 2],
-  answers: {
-    1: ["A"],
-    2: ["A"],
-  },
-  startedAt: "2026-05-27T00:00:00.000Z",
-  durationMinutes: 180,
-  status: "submitted",
-  submittedAt: "2026-05-27T01:00:00.000Z",
-  score: {
-    correct: 1,
-    total: 2,
-    percent: 50,
-    pass: false,
-  },
-};
-
 describe("ExamResult", () => {
-  it("renders score, fail badge, and every question review", () => {
-    render(<ExamResult attempt={attempt} questions={questions} />);
+  it("renders one correct question review without score chrome", () => {
+    render(<ExamResult question={questions[0]} selected={["A"]} correctness={"correct" satisfies Correctness} />);
 
-    expect(screen.getByRole("heading", { name: "시험 결과" })).toBeInTheDocument();
-    expect(screen.getByText("1 / 2")).toBeInTheDocument();
-    expect(screen.getByText("50%")).toBeInTheDocument();
-    expect(screen.getByText("불합격")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "시험 결과" })).not.toBeInTheDocument();
+    expect(screen.queryByText("1 / 2")).not.toBeInTheDocument();
+    expect(screen.queryByText("50%")).not.toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "문제 1" })).toBeInTheDocument();
+    expect(screen.getByRole("article", { name: "문제 1 정답" })).toHaveAttribute("id", "q-1");
     expect(screen.getByText("내 답: A. Amazon S3")).toBeInTheDocument();
     expect(screen.getByText("정답: A. Amazon S3")).toBeInTheDocument();
     expect(screen.getByText("S3 stores objects.")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "문제 2" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "문제 2" })).not.toBeInTheDocument();
+  });
+
+  it("renders one incorrect multi-choice review", () => {
+    render(<ExamResult question={questions[1]} selected={["A"]} correctness={"incorrect" satisfies Correctness} />);
+
+    expect(screen.getByRole("article", { name: "문제 2 오답" })).toHaveAttribute("id", "q-2");
     expect(screen.getByText("내 답: A. Amazon EC2")).toBeInTheDocument();
     expect(screen.getByText("정답: A. Amazon EC2, C. AWS Lambda")).toBeInTheDocument();
     expect(screen.getByText("EC2 and Lambda run compute workloads.")).toBeInTheDocument();
   });
 
-  it("renders pass badge when the score reaches 75 percent", () => {
+  it("renders unanswered selected labels", () => {
+    render(<ExamResult question={questions[1]} selected={[]} correctness={"incorrect" satisfies Correctness} />);
+
+    expect(screen.getByText("내 답: 미응답")).toBeInTheDocument();
+  });
+
+  it("can display sequential result numbers while keeping the real question content", () => {
     render(
       <ExamResult
-        attempt={{
-          ...attempt,
-          score: { correct: 2, total: 2, percent: 100, pass: true },
-        }}
-        questions={questions}
+        question={{ ...questions[1], number: 20 }}
+        displayNumber={2}
+        selected={[]}
+        correctness={"incorrect" satisfies Correctness}
+        actions={<button type="button">문제집에 추가</button>}
       />,
     );
 
-    expect(screen.getByText("합격")).toBeInTheDocument();
+    expect(screen.getByRole("article", { name: "문제 2 오답" })).toHaveAttribute("id", "q-2");
+    expect(screen.getByRole("heading", { name: "문제 2" })).toBeInTheDocument();
+    expect(screen.getByText("Choose compute services.")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "문제 20" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "문제집에 추가" })).toBeInTheDocument();
   });
 });

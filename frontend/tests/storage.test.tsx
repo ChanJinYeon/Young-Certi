@@ -66,6 +66,33 @@ describe("localStorage hooks", () => {
     expect(hook.result.current.sets[0].questionRefs).toEqual([{ examSlug: "sap-c02", number: 1 }]);
   });
 
+  it("creates a set with multiple real question refs in one storage update", () => {
+    const hook = renderHook(() => useQuestionSets("session-1"));
+
+    act(() =>
+      hook.result.current.createSetWithRefs("Wrong answers", [
+        { examSlug: "sap-c02", number: 10 },
+        { examSlug: "sap-c02", number: 20 },
+        { examSlug: "sap-c02", number: 10 },
+      ]),
+    );
+
+    expect(hook.result.current.sets).toHaveLength(1);
+    expect(hook.result.current.sets[0]).toEqual(
+      expect.objectContaining({
+        name: "Wrong answers",
+        questionRefs: [
+          { examSlug: "sap-c02", number: 10 },
+          { examSlug: "sap-c02", number: 20 },
+        ],
+      }),
+    );
+    expect(JSON.parse(localStorage.getItem("young-certi/v1/session-1/sets") ?? "[]")[0].questionRefs).toEqual([
+      { examSlug: "sap-c02", number: 10 },
+      { examSlug: "sap-c02", number: 20 },
+    ]);
+  });
+
   it("deletes only the targeted set and removes its set-scoped results", () => {
     localStorage.setItem(
       "young-certi/v1/session-1/sets",

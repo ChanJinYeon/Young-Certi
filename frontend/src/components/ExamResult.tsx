@@ -1,10 +1,14 @@
+import type { ReactNode } from "react";
+
 import type { Question } from "../api/types";
-import { score as gradeChoice } from "../hooks/usePerQuestionResult";
-import type { ExamAttempt } from "../hooks/useExamAttempt";
+import type { Correctness } from "../hooks/usePerQuestionResult";
 
 type ExamResultProps = {
-  attempt: ExamAttempt;
-  questions: Question[];
+  question: Question;
+  displayNumber?: number;
+  selected: string[];
+  correctness: Correctness;
+  actions?: ReactNode;
 };
 
 function labelsFor(question: Question, labels: string[]): string {
@@ -17,78 +21,45 @@ function labelsFor(question: Question, labels: string[]): string {
     .join(", ");
 }
 
-export function ExamResult({ attempt, questions }: ExamResultProps) {
-  const score = attempt.score ?? { correct: 0, total: questions.length, percent: 0, pass: false };
-  const badgeClass = score.pass
-    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-    : "border-zinc-300 bg-zinc-100 text-zinc-700";
+export function ExamResult({ question, displayNumber = question.number, selected, correctness, actions }: ExamResultProps) {
+  const correct = correctness === "correct";
+  const correctnessLabel = correct ? "정답" : "오답";
 
   return (
-    <section className="space-y-5" aria-labelledby="exam-result-title">
-      <div className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-medium text-zinc-500">AWS SAP-C02</p>
-            <h1 id="exam-result-title" className="text-3xl font-semibold text-zinc-950">
-              시험 결과
-            </h1>
-          </div>
-          <span className={`rounded-full border px-3 py-1 text-sm font-semibold ${badgeClass}`}>
-            {score.pass ? "합격" : "불합격"}
-          </span>
-        </div>
-        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-          <div>
-            <p className="text-sm text-zinc-500">정답 수</p>
-            <p className="font-mono text-3xl font-semibold text-zinc-950">
-              {score.correct} / {score.total}
-            </p>
-          </div>
-          <div>
-            <p className="text-sm text-zinc-500">정답률</p>
-            <p className="font-mono text-3xl font-semibold text-zinc-950">{score.percent}%</p>
-          </div>
-        </div>
+    <article
+      id={`q-${displayNumber}`}
+      aria-label={`문제 ${displayNumber} ${correctnessLabel}`}
+      className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm"
+    >
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold text-zinc-950">문제 {displayNumber}</h2>
+        <span
+          className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${
+            correct
+              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+              : "border-rose-200 bg-rose-50 text-rose-700"
+          }`}
+        >
+          {correctnessLabel}
+        </span>
       </div>
-
-      <div className="space-y-3">
-        {questions.map((question) => {
-          const selected = attempt.answers[question.number] ?? [];
-          const correct = gradeChoice(selected, question.answerKey) === "correct";
-          return (
-            <article key={question.number} className="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-lg font-semibold text-zinc-950">문제 {question.number}</h2>
-                <span
-                  className={`shrink-0 rounded-full border px-2.5 py-1 text-xs font-medium ${
-                    correct
-                      ? "border-emerald-200 bg-emerald-50 text-emerald-700"
-                      : "border-rose-200 bg-rose-50 text-rose-700"
-                  }`}
-                >
-                  {correct ? "정답" : "오답"}
-                </span>
-              </div>
-              <p className="mt-2 leading-relaxed text-zinc-800">{question.text}</p>
-              <dl className="mt-4 space-y-2 text-sm">
-                <div>
-                  <dt className="font-medium text-zinc-500">내 답</dt>
-                  <dd className="text-zinc-900">내 답: {labelsFor(question, selected)}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-zinc-500">정답</dt>
-                  <dd className="text-zinc-900">정답: {labelsFor(question, question.answerKey)}</dd>
-                </div>
-              </dl>
-              {question.explanation ? (
-                <p className="mt-4 rounded-md bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
-                  {question.explanation}
-                </p>
-              ) : null}
-            </article>
-          );
-        })}
-      </div>
-    </section>
+      <p className="mt-2 leading-relaxed text-zinc-800">{question.text}</p>
+      <dl className="mt-4 space-y-2 text-sm">
+        <div>
+          <dt className="font-medium text-zinc-500">내 답</dt>
+          <dd className="text-zinc-900">내 답: {labelsFor(question, selected)}</dd>
+        </div>
+        <div>
+          <dt className="font-medium text-zinc-500">정답</dt>
+          <dd className="text-zinc-900">정답: {labelsFor(question, question.answerKey)}</dd>
+        </div>
+      </dl>
+      {question.explanation ? (
+        <p className="mt-4 rounded-md bg-zinc-50 p-3 text-sm leading-relaxed text-zinc-700">
+          {question.explanation}
+        </p>
+      ) : null}
+      {actions ? <div className="mt-4 flex justify-end">{actions}</div> : null}
+    </article>
   );
 }

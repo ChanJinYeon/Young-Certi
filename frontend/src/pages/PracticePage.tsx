@@ -1,13 +1,15 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { fetchQuestion, fetchQuestionNumbers } from "../api/client";
 import { ChoiceList } from "../components/ChoiceList";
 import { FavoriteToggle } from "../components/FavoriteToggle";
+import { Pager } from "../components/Pager";
 import { QuestionSetPicker } from "../components/QuestionSetPicker";
 import { ResultFeedback } from "../components/ResultFeedback";
 import { SideMenu } from "../components/SideMenu";
+import { StudyTwoPane } from "../components/StudyTwoPane";
 import { ApiError } from "../lib/error";
 import { useFavorites } from "../hooks/useFavorites";
 import { useLocalSession } from "../hooks/useLocalSession";
@@ -19,9 +21,12 @@ const ghostButton =
   "inline-flex min-h-11 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 disabled:opacity-50 disabled:hover:bg-transparent";
 const primaryButton =
   "inline-flex min-h-11 items-center justify-center rounded-md bg-zinc-900 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:opacity-50";
+const topBarLink =
+  "inline-flex h-9 items-center justify-center rounded-md border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-800 transition-colors hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-900";
 
 export function PracticePage() {
   const params = useParams();
+  const navigate = useNavigate();
   const examSlug = params.examSlug ?? "sap-c02";
   const { sessionId, isEphemeral } = useLocalSession();
   // Current question lives in client state (persisted), not the URL — the URL
@@ -134,62 +139,61 @@ export function PracticePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 lg:flex-row">
+    <div className="min-h-screen bg-zinc-50">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-zinc-900 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
       >
         본문으로 건너뛰기
       </a>
-      <SideMenu
-        numbers={numbers}
-        current={validNumber}
-        statuses={statuses}
-        favorites={favorites.favorites}
-        examSlug={examSlug}
-        onSelect={goTo}
-      />
-      <main id="main-content" className="flex-1">
-        <div className="mx-auto max-w-3xl space-y-5 p-4 sm:p-6">
-          {isEphemeral ? (
-            <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
-              이 탭 동안만 유지돼요.
-            </p>
-          ) : null}
-
-          <div
-            role="group"
-            aria-label="문제 상단 컨트롤"
-            className="flex flex-wrap items-center justify-between gap-2"
-          >
-            <Link to="/" className={ghostButton}>
-              홈으로
-            </Link>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                disabled={index <= 0}
-                onClick={() => goTo(numbers[index - 1])}
-                className={ghostButton}
-              >
-                이전
+      <StudyTwoPane
+        topBar={
+          <div className="grid w-full grid-cols-[3.5rem_minmax(0,1fr)_3.5rem] items-center gap-2 lg:grid-cols-[1fr_auto_1fr] lg:gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <button type="button" aria-label="이전 화면으로" className={topBarLink} onClick={() => navigate(-1)}>
+                <span aria-hidden>←</span>
+                <span className="hidden lg:inline">이전</span>
               </button>
-              <button
-                type="button"
-                disabled={index === -1 || index >= numbers.length - 1}
-                onClick={() => goTo(numbers[index + 1])}
-                className={ghostButton}
-              >
-                다음
-              </button>
+              <h1 className="hidden truncate text-lg font-semibold text-zinc-950 lg:block">문제 풀이</h1>
+              <span className="hidden text-sm font-medium text-zinc-500 lg:inline">AWS SAP-C02</span>
             </div>
+            <Pager
+              current={index === -1 ? 0 : index + 1}
+              total={numbers.length}
+              prevDisabled={index <= 0}
+              nextDisabled={index === -1 || index >= numbers.length - 1}
+              onPrev={() => goTo(numbers[index - 1])}
+              onNext={() => goTo(numbers[index + 1])}
+            />
+            <div aria-hidden className="h-9" />
           </div>
+        }
+        sidebar={
+          <SideMenu
+            numbers={numbers}
+            current={validNumber}
+            statuses={statuses}
+            favorites={favorites.favorites}
+            examSlug={examSlug}
+            onSelect={goTo}
+          />
+        }
+      >
+          <div
+            data-testid="practice-study-content"
+            className="mx-auto max-w-3xl space-y-5 px-4 pb-6 pt-4 sm:px-6 xl:-translate-x-[7.5rem]"
+          >
+            {isEphemeral ? (
+              <p className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-700">
+                이 탭 동안만 유지돼요.
+              </p>
+            ) : null}
 
-          <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <article className="space-y-4 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
             <header className="flex items-center justify-between gap-3">
-              <h1 className="text-2xl font-semibold text-zinc-900">
+              <h2 className="text-2xl font-semibold text-zinc-900">
                 문제 <span className="font-mono">{question.number}</span>
-              </h1>
+              </h2>
               <FavoriteToggle
                 active={favorites.isFavorite(examSlug, question.number)}
                 onToggle={() => favorites.toggleFavorite(examSlug, question.number)}
@@ -204,32 +208,32 @@ export function PracticePage() {
               onChange={setSelected}
             />
             {submitError ? <p className="text-sm text-rose-700">{submitError}</p> : null}
-          </article>
+            </article>
 
-          <div
-            role="group"
-            aria-label="문제 하단 컨트롤"
-            className="flex flex-wrap items-center justify-between gap-2"
-          >
-            <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
-              문제집에 추가
-            </button>
-            <div className="flex gap-2">
-              {submitted ? (
-                <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
-                  다시 풀기
-                </button>
-              ) : (
-                <button type="button" onClick={submit} className={primaryButton}>
-                  제출
-                </button>
-              )}
+            <div
+              role="group"
+              aria-label="문제 하단 컨트롤"
+              className="flex flex-wrap items-center justify-end gap-2"
+            >
+              <button type="button" onClick={() => setPickerOpen(true)} className={ghostButton}>
+                문제집에 추가
+              </button>
+              <div className="flex gap-2">
+                {submitted ? (
+                  <button type="button" onClick={retryCurrentQuestion} className={ghostButton}>
+                    다시 풀기
+                  </button>
+                ) : (
+                  <button type="button" onClick={submit} className={primaryButton}>
+                    제출
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
 
-          <ResultFeedback question={question} selected={selected} submitted={submitted} />
-        </div>
-      </main>
+            <ResultFeedback question={question} selected={selected} submitted={submitted} />
+          </div>
+      </StudyTwoPane>
 
       {pickerOpen ? (
         <QuestionSetPicker

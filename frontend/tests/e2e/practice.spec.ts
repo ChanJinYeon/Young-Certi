@@ -97,6 +97,28 @@ test("reload restores the current question from localStorage", async ({ page }) 
   await expect(page.getByRole("heading", { name: "문제 20" })).toBeVisible();
 });
 
+test("keeps the question card top pinned while paging on mobile and desktop", async ({ page }) => {
+  for (const viewport of [
+    { width: 375, height: 800 },
+    { width: 1280, height: 800 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+    await page.evaluate(() => window.localStorage.clear());
+    await page.goto("/sap-c02/practice");
+
+    await expect(page.getByRole("heading", { name: "문제 1" })).toBeVisible();
+    const firstTop = await page.locator("article").first().boundingBox();
+    expect(firstTop).not.toBeNull();
+
+    await page.getByRole("group", { name: "문제 이동" }).getByRole("button", { name: "다음" }).click();
+    await expect(page.getByRole("heading", { name: "문제 2" })).toBeVisible();
+    const nextTop = await page.locator("article").first().boundingBox();
+    expect(nextTop).not.toBeNull();
+    expect(Math.round(nextTop!.y)).toBe(Math.round(firstTop!.y));
+  }
+});
+
 test("landing relies on the practice entry to resume the last viewed question", async ({ page }) => {
   await page.goto("/sap-c02/practice");
   await expect(page.getByRole("heading", { name: "문제 1" })).toBeVisible();

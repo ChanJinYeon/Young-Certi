@@ -6,13 +6,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { PracticePage } from "../src/pages/PracticePage";
 
-function renderPractice(path = "/sap-c02/practice") {
+function renderPractice(path = "/sap-c02/practice", initialEntries = [path]) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={[path]}>
+      <MemoryRouter initialEntries={initialEntries} initialIndex={initialEntries.length - 1}>
         <Routes>
           <Route path="/:examSlug/practice" element={<PracticePage />} />
+          <Route path="/previous" element={<h1>Previous page</h1>} />
           <Route path="/" element={<h1>YoungCerti</h1>} />
         </Routes>
       </MemoryRouter>
@@ -62,13 +63,21 @@ describe("PracticePage", () => {
     renderPractice();
 
     expect(await screen.findByText("Question 1?")).toBeInTheDocument();
-    const topControls = screen.getByRole("group", { name: "문제 상단 컨트롤" });
+    const topBar = screen.getByTestId("study-two-pane-top-bar");
+    expect(topBar.firstElementChild).toHaveClass("grid-cols-[3.5rem_minmax(0,1fr)_3.5rem]");
+    const pager = within(topBar).getByRole("group", { name: "문제 이동" });
     const bottomControls = screen.getByRole("group", { name: "문제 하단 컨트롤" });
-    expect(within(topControls).getByRole("link", { name: "홈으로" })).toBeInTheDocument();
-    expect(within(topControls).getByRole("button", { name: "이전" })).toBeInTheDocument();
-    expect(within(topControls).getByRole("button", { name: "다음" })).toBeInTheDocument();
+    expect(within(topBar).getByRole("button", { name: "이전 화면으로" })).toHaveTextContent("이전");
+    expect(within(topBar).getByRole("heading", { name: "문제 풀이" })).toBeInTheDocument();
+    expect(within(topBar).getByText("AWS SAP-C02")).toHaveClass("hidden", "lg:inline");
+    expect(screen.getByTestId("practice-study-content")).toHaveClass("xl:-translate-x-[7.5rem]");
+    expect(within(pager).getByRole("button", { name: "이전" })).toBeDisabled();
+    expect(within(pager).getByText("1 / 2")).toBeInTheDocument();
+    expect(within(pager).getByRole("button", { name: "다음" })).toBeEnabled();
     expect(within(bottomControls).getByRole("button", { name: "문제집에 추가" })).toBeInTheDocument();
     expect(within(bottomControls).getByRole("button", { name: "제출" })).toBeInTheDocument();
+    expect(bottomControls).toHaveClass("justify-end");
+    expect(bottomControls.textContent).toMatch(/문제집에 추가\s*제출/);
 
     await user.click(within(bottomControls).getByRole("button", { name: "제출" }));
     expect(screen.getByText("선지를 하나 이상 선택하세요.")).toBeInTheDocument();
@@ -78,7 +87,7 @@ describe("PracticePage", () => {
     expect(screen.getByText("S3입니다.")).toBeInTheDocument();
     expect(within(screen.getByRole("group", { name: "문제 하단 컨트롤" })).getByRole("button", { name: "다시 풀기" })).toBeInTheDocument();
 
-    await user.click(within(topControls).getByRole("button", { name: "다음" }));
+    await user.click(within(pager).getByRole("button", { name: "다음" }));
     await waitFor(() => expect(screen.getByText("Question 2?")).toBeInTheDocument());
   });
 
@@ -119,17 +128,17 @@ describe("PracticePage", () => {
     expect(screen.getByText("S3입니다.")).toBeInTheDocument();
   });
 
-  it("navigates home without clearing session state", async () => {
+  it("navigates to the previous page without clearing session state", async () => {
     const user = userEvent.setup();
     stubTwoQuestions();
 
-    renderPractice();
+    renderPractice("/sap-c02/practice", ["/previous", "/sap-c02/practice"]);
 
     expect(await screen.findByText("Question 1?")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "즐겨찾기 추가" }));
-    await user.click(screen.getByRole("link", { name: "홈으로" }));
+    await user.click(screen.getByRole("button", { name: "이전 화면으로" }));
 
-    expect(await screen.findByRole("heading", { name: "YoungCerti" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Previous page" })).toBeInTheDocument();
 
     const sessionId = localStorage.getItem("young-certi/sessionId");
     expect(sessionId).toBeTruthy();

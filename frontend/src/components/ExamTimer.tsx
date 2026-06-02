@@ -22,9 +22,12 @@ export function ExamTimer({ remainingSeconds }: ExamTimerProps) {
     remainingSeconds === 0 ? "시험 시간이 만료되었습니다." : `남은 시간 약 ${Math.ceil(remainingSeconds / 60)}분`;
 
   return (
-    <section aria-label="시험 타이머" className={`rounded-lg border px-4 py-3 shadow-sm ${tone}`}>
+    <section
+      aria-label="시험 타이머"
+      className={`flex h-9 items-center gap-2 rounded-md border px-3 shadow-sm ${tone}`}
+    >
       <p className="text-xs font-medium text-zinc-500">남은 시간</p>
-      <p className="font-mono text-2xl font-semibold">{formatRemaining(remainingSeconds)}</p>
+      <p className="font-mono text-sm font-semibold">{formatRemaining(remainingSeconds)}</p>
       <p className="sr-only" aria-live="polite">
         {liveMessage}
       </p>

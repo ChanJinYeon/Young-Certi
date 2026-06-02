@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { fetchQuestionNumbers } from "../api/client";
 import { EntryCard } from "../components/EntryCard";
+import { PageHeader } from "../components/PageHeader";
 
 const knownExams = {
   "sap-c02": {
@@ -24,11 +25,12 @@ export function ExamLandingPage() {
     return (
       <main className="min-h-screen bg-zinc-50">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-8 sm:px-6 lg:py-12">
-          <Link to="/" className="text-sm font-medium text-zinc-500 hover:text-zinc-900">
-            홈으로
-          </Link>
-          <h1 className="text-3xl font-semibold text-zinc-950">해당 시험을 찾을 수 없습니다</h1>
-          <p className="text-zinc-600">홈에서 사용 가능한 자격증을 다시 선택하세요.</p>
+          <PageHeader
+            backTo="/"
+            backLabel="홈으로"
+            title="해당 시험을 찾을 수 없습니다"
+            description="홈에서 사용 가능한 자격증을 다시 선택하세요."
+          />
         </div>
       </main>
     );
@@ -37,21 +39,18 @@ export function ExamLandingPage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8 sm:px-6 lg:py-12">
-        <Link to="/" className="text-sm font-medium text-zinc-500 hover:text-zinc-900">
-          홈으로
-        </Link>
-        <header className="space-y-3">
-          <p className="text-sm font-medium text-zinc-500">{exam.version}</p>
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <h1 className="text-3xl font-semibold text-zinc-950">{exam.displayName}</h1>
-            {questionNumbersQuery.data ? (
-              <p className="font-mono text-sm text-zinc-700">{questionNumbersQuery.data.total}문항</p>
-            ) : null}
-          </div>
-          <p className="max-w-2xl leading-relaxed text-zinc-600">
-            학습 모드를 선택하세요. 지금은 문제 풀이만 사용할 수 있습니다.
-          </p>
-        </header>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <PageHeader
+            backTo="/"
+            backLabel="홈으로"
+            eyebrow={exam.version}
+            title={exam.displayName}
+            description="학습 모드를 선택해 바로 시작하세요."
+          />
+          {questionNumbersQuery.data ? (
+            <p className="pb-1 font-mono text-sm text-zinc-700">{questionNumbersQuery.data.total}문항</p>
+          ) : null}
+        </div>
 
         {questionNumbersQuery.isError ? (
           <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
@@ -67,12 +66,12 @@ export function ExamLandingPage() {
           />
           <EntryCard
             title="시험 모드"
-            description="제한 시간 안에 75문항을 풀고 결과를 확인합니다."
+            description="75문항을 무작위로 선택해 제한 시간 안에 풀이합니다. 시험 중에는 정답과 해설을 표시하지 않습니다."
             to={`/${examSlug}/exam`}
           />
           <EntryCard
             title="문제집"
-            description="저장한 문제 묶음을 열고 관리합니다."
+            description="저장해 둔 문제 묶음을 열어 필요한 범위만 다시 풉니다."
             to={`/${examSlug}/sets`}
           />
         </section>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchExams } from "../api/client";
 import type { ExamSummary } from "../api/types";
 import { CertCard } from "../components/CertCard";
+import { PageHeader } from "../components/PageHeader";
 
 const fallbackExams: ExamSummary[] = [
   {
@@ -24,13 +25,7 @@ export function HomePage() {
   return (
     <main className="min-h-screen bg-zinc-50">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 py-8 sm:px-6 lg:py-12">
-        <header className="space-y-3">
-          <p className="text-sm font-medium text-zinc-500">자격증 문제 풀이</p>
-          <h1 className="text-3xl font-semibold text-zinc-950">YoungCerti</h1>
-          <p className="max-w-2xl leading-relaxed text-zinc-600">
-            응시할 자격증을 선택해 바로 문제 풀이를 시작하세요.
-          </p>
-        </header>
+        <PageHeader title="YoungCerti" description="응시할 자격증을 선택해 바로 문제 풀이를 시작하세요." />
 
         {examsQuery.isError ? (
           <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
