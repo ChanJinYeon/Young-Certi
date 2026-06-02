@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read    # repo 코드를 읽을 수 있는 권한
+  contents: write   # repo 코드를 수정할 수 있는 권한 -> kustomization.yaml 수정해야 하기 때문 (image:tag)
   id-token: write   # GitHub OIDC 토큰을 발급받아 AWS IAM Role을 assume하기 위한 권한
 
 jobs:
@@ -57,20 +57,20 @@ jobs:
           S3_QUESTIONS_KEY: test/questions.json
         run: pytest
 
-    # AWS 인증
+      # AWS 인증
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ vars.BACKEND_AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
 
-    # ECR 로그인 (임시 AWS credentials)
+      # ECR 로그인 (임시 AWS credentials)
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
-    # 이미지 빌드 (태그로 관리)
-    # build context는 repo root이므로 -f backend/Dockerfile 지정 필수
-    # {{ github.sha }}: commit-sha
+      # 이미지 빌드 (태그로 관리)
+      # build context는 repo root이므로 -f backend/Dockerfile 지정 필수
+      # {{ github.sha }}: commit-sha
       - name: Build image
         run: |
           docker build \
@@ -78,7 +78,33 @@ jobs:
             -t "${{ vars.BACKEND_ECR_REPOSITORY_URL }}:${{ github.sha }}" \
             .
 
-    # ECR에 push
+      # ECR에 push
       - name: Push image
         run: |
           docker push "${{ vars.BACKEND_ECR_REPOSITORY_URL }}:${{ github.sha }}"
+
+      # kustomize 설치
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      # kustomize에서 image, tag 업데이트
+      - name: Update backend image tag
+        run: |
+          cd k8s/backend
+          kustomize edit set image young-certi-backend=${{ vars.BACKEND_ECR_REPOSITORY_URL }}:${{ github.sha }}
+
+      # kubernetes manifest 업데이트 (kustomization.yaml - image:tag)
+      - name: Commit backend manifest update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add k8s/backend/kustomization.yaml
+
+          if git diff --cached --quiet; then
+            echo "No manifest changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore(gitops): deploy backend ${{ github.sha }}"
+          git push origin HEAD:main
