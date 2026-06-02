@@ -20,3 +20,16 @@ variable "versioning_enabled" {
   type        = bool
   default     = true
 }
+
+################################################################
+# CloudFront
+################################################################
+variable "domain_name" {
+  description = "Custom domain name for the CloudFront distribution."
+  type        = string
+}
+
+variable "acm_certificate_arn" {
+  description = "ACM certificate ARN for CloudFront. Must be issued in us-east-1."
+  type        = string
+}

@@ -17,3 +17,8 @@ output "bucket_arn" {
   description = "ARN of the frontend S3 bucket."
   value       = aws_s3_bucket.main.arn
 }
+
+output "cloudfront_hosted_zone_id" {
+  description = "CloudFront hosted zone ID."
+  value       = aws_cloudfront_distribution.main.hosted_zone_id
+}

@@ -14,7 +14,7 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
 
     # ACM에서 발급받은 인증서
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:474668399282:certificate/f5bf84e5-5f80-4e03-be31-c8a445eff7c9
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:474668399282:certificate/8aae4ead-d4c0-4510-9f2f-6a005858864d
 
     # HTTP -> HTTPS 리다이렉트
     alb.ingress.kubernetes.io/ssl-redirect: "443"

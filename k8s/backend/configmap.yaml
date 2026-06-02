@@ -9,4 +9,4 @@ data:
   S3_QUESTIONS_KEY: sap-c02/questions.json
   
   # CloudFront 도메인, 로컬 개발 주소 작성
-  CORS_ALLOWED_ORIGINS: http://localhost:15173,https://d1ndorup391ph6.cloudfront.net
+  CORS_ALLOWED_ORIGINS: http://localhost:15173,https://d1ndorup391ph6.cloudfront.net,https://certi.adansonia.cloud

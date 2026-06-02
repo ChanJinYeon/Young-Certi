@@ -30,3 +30,21 @@ variable "backend_ecr_repository_name" {
   type        = string
   default     = "young-certi-backend"
 }
+
+################################################################
+# CloudFront
+################################################################
+variable "frontend_domain_name" {
+  description = "Custom domain name for the frontend CloudFront distribution."
+  type        = string
+}
+
+variable "frontend_acm_certificate_arn" {
+  description = "ACM certificate ARN for the frontend CloudFront distribution. Must be issued in us-east-1."
+  type        = string
+}
+
+variable "hosted_zone_id" {
+  description = "Route53 hosted zone ID for adansonia.cloud."
+  type        = string
+}

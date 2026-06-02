@@ -18,6 +18,9 @@ module "frontend_site" {
 
   bucket_name = var.frontend_bucket_name
 
+  domain_name         = var.frontend_domain_name
+  acm_certificate_arn = var.frontend_acm_certificate_arn
+
   tags = {
     Project     = "young-certi"
     Environment = "dev"
