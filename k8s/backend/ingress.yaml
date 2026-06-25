@@ -19,6 +19,9 @@ metadata:
     # HTTP -> HTTPS 리다이렉트
     alb.ingress.kubernetes.io/ssl-redirect: "443"
 
+    # externalDNS annotation 추가
+    external-dns.alpha.kubernetes.io/hostname: api.certi.adansonia.cloud
+
 spec:
   ingressClassName: alb
   rules:
