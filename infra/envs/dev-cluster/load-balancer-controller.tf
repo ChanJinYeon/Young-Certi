@@ -42,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "load_balancer_controller" {
   policy_arn = aws_iam_policy.load_balancer_controller.arn
 }
 
-# ServiceAccount + AWS IAM Role 연결 (적용은 Deployment에서)
+# ServiceAccount + AWS IAM Role 연결 (적용은 helm install에서)
 resource "aws_eks_pod_identity_association" "load_balancer_controller" {
   cluster_name    = module.eks.cluster_name
   namespace       = "kube-system"                  # AWS Load Balancer Controller는 보통 kube-system에 위치

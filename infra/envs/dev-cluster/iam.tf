@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "backend_api_s3_read" {
   }
 }
 
-# IAM Role 생성
+# IAM Role 생성 - Trust Policy
 resource "aws_iam_role" "backend_api" {
   name               = "${local.name}-backend-api"
   assume_role_policy = data.aws_iam_policy_document.backend_api_assume_role.json

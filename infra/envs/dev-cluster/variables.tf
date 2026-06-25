@@ -21,3 +21,18 @@ variable "question_data_bucket_name" {
   type        = string
   default     = "young-certi-study"
 }
+
+################################################################
+# ExternalDNS용 Variable
+################################################################
+# 수정할 수 있는 Route53 Hosted Zone
+variable "hosted_zone_id" {
+  description = "Route53 hosted zone ID that ExternalDNS can manage."
+  type        = string
+}
+
+variable "external_dns_domain_filter" {
+  description = "Domain suffix that ExternalDNS is allowed to manage."
+  type        = string
+  default     = "adansonia.cloud"
+}
