@@ -31,7 +31,7 @@ spec:
                 name: young-certi-api-config
 
           # Pod가 트래픽을 받아도 되는지 확인
-          # 이때 실패하면 Service endpoint에서 제외됩니다.
+          # 이때 실패하면 Service endpoint에서 제외
           readinessProbe:
             httpGet:
               path: /healthz
@@ -41,8 +41,8 @@ spec:
             timeoutSeconds: 2
             failureThreshold: 3
 
-          # 컨테이너가 살아 있는지 확인합니다.
-          # 계속 실패하면 kubelet이 컨테이너를 재시작합니다.
+          # 컨테이너가 살아 있는지 확인
+          # 계속 실패하면 kubelet이 컨테이너를 재시작
           livenessProbe:
             httpGet:
               path: /healthz
